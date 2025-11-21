@@ -2,11 +2,11 @@ import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 function Ask() {
-  const [messages, setMessages] = useState([]); // chat history
+  const [messages, setMessages] = useState([]); 
   const [query, setQuery] = useState("");
-  const chatEndRef = useRef(null); // Auto-scroll to bottom when new messages arrive
-  const BASE_URL = "https://backend-tirumantiram.onrender.com";
+  const chatEndRef = useRef(null); 
 
+  const BASE_URL = "https://guru-25-tm.hf.space";
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -20,10 +20,9 @@ function Ask() {
     setQuery("");
 
     try {
-       const res = await fetch(`${BASE_URL}/chat_search?q=${encodeURIComponent(userQuery)}`);
-    const data = await res.json();
+      const res = await fetch(`${BASE_URL}/chat_search?q=${encodeURIComponent(userQuery)}`);
+      const data = await res.json();
 
-      // Build bot reply
       const botMessages = [];
 
       botMessages.push({
@@ -89,7 +88,6 @@ function Ask() {
         fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
       }}
     >
-      {/* Chat window */}
       <div
         style={{
           flexGrow: 1,
@@ -126,14 +124,13 @@ function Ask() {
               lineHeight: "1.4",
             }}
           >
-            {msg.isHtml ? msg.text : msg.text}
+            {msg.text}
           </div>
         ))}
 
         <div ref={chatEndRef} />
       </div>
 
-      {/* Input box */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
