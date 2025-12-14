@@ -2,48 +2,75 @@ import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 function Ask() {
-  const [messages, setMessages] = useState([]); 
+  const [messages, setMessages] = useState([]);
   const [query, setQuery] = useState("");
-  const chatEndRef = useRef(null); 
+  const chatEndRef = useRef(null);
 
-  const BASE_URL = "https://guru-25-tm.hf.space";
-
+  
+   const BASE_URL = "https://guru-25-tm.hf.space";
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-
   async function handleSend() {
     if (!query.trim()) return;
-    setMessages((msgs) => [...msgs, { sender: "user", text: query }]);
+
     const userQuery = query;
+    setMessages((msgs) => [...msgs, { sender: "user", text: userQuery }]);
     setQuery("");
 
     try {
-      const res = await fetch(`${BASE_URL}/chat_search?q=${encodeURIComponent(userQuery)}`);
+      const res = await fetch(
+        `${BASE_URL}/chat_search?q=${encodeURIComponent(userQuery)}`
+      );
       const data = await res.json();
 
+      // 🔴 OUT OF SCOPE CASE
+      if (data.out_of_scope) {
+        setMessages((msgs) => [
+          ...msgs,
+          {
+            sender: "bot",
+            text: ` ${data.message}`,
+            isHtml: false,
+          },
+        ]);
+        return;
+      }
+
+      // 🟢 IN-SCOPE CASE
       const botMessages = [];
 
+      // Summary message
       botMessages.push({
         sender: "bot",
-        text: `💡 Summary:\n${data.summary}\n\n📖 Relevant Verses:`,
+        text: `💡 Summary:\n${data.summary}`,
         isHtml: false,
       });
 
+      // Verses
       data.results.forEach((r, i) => {
         botMessages.push({
           sender: "bot",
           isHtml: true,
           text: (
-            <div key={i} style={{ marginBottom: "10px" }}>
+            <div key={i} style={{ marginBottom: "12px" }}>
               <strong>{i + 1}. Song #{r.song_number}</strong>
               <br />
-              <span>பாடல்: {r.padal.slice(0, 80)}{r.padal.length > 80 ? "..." : ""}</span>
+              <span>
+                பாடல்: {r.padal.slice(0, 80)}
+                {r.padal.length > 80 ? "..." : ""}
+              </span>
               <br />
-              <span>விளக்கம்: {r.vilakam.slice(0, 80)}{r.vilakam.length > 80 ? "..." : ""}</span>
+              <span>
+                விளக்கம்: {r.vilakam.slice(0, 80)}
+                {r.vilakam.length > 80 ? "..." : ""}
+              </span>
               <br />
-              <span>Meaning (English): {r.vilakam_en.slice(0, 80)}{r.vilakam_en.length > 80 ? "..." : ""}</span>
+              <span>
+                Meaning (English): {r.vilakam_en.slice(0, 80)}
+                {r.vilakam_en.length > 80 ? "..." : ""}
+              </span>
               <br />
               <Link
                 to={`/songs/${encodeURIComponent(r.payiram)}/${r.song_number}`}
@@ -61,7 +88,11 @@ function Ask() {
       console.error(error);
       setMessages((msgs) => [
         ...msgs,
-        { sender: "bot", text: "⚠️ Sorry, something went wrong.", isHtml: false },
+        {
+          sender: "bot",
+          text: "⚠️ Sorry, something went wrong.",
+          isHtml: false,
+        },
       ]);
     }
   }
@@ -93,11 +124,6 @@ function Ask() {
           flexGrow: 1,
           padding: "20px",
           overflowY: "auto",
-          backgroundImage: "url('/background.png')",
-          backgroundSize: "contain",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          backgroundAttachment: "fixed",
           backgroundColor: "rgba(250, 247, 243, 0.6)",
         }}
       >
@@ -116,12 +142,13 @@ function Ask() {
               padding: "12px 18px",
               borderRadius: "20px",
               whiteSpace: "pre-line",
-              backgroundColor: msg.sender === "user" ? "#D9A299" : "#F0E4D3",
+              backgroundColor:
+                msg.sender === "user" ? "#D9A299" : "#F0E4D3",
               color: "#5A3E36",
-              alignSelf: msg.sender === "user" ? "flex-end" : "flex-start",
+              alignSelf:
+                msg.sender === "user" ? "flex-end" : "flex-start",
               boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
               fontSize: "1rem",
-              lineHeight: "1.4",
             }}
           >
             {msg.text}
@@ -156,8 +183,6 @@ function Ask() {
             borderRadius: "20px",
             border: "1px solid #ccc",
             fontSize: "1rem",
-            fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-            color: "#5A3E36",
           }}
         />
         <button
@@ -169,7 +194,6 @@ function Ask() {
             borderRadius: "20px",
             padding: "10px 20px",
             fontWeight: "600",
-            color: "#5A3E36",
             cursor: "pointer",
           }}
         >
