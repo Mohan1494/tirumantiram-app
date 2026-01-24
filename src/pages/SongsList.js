@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import Footer from "../components/Footer";
 
 function SongsList({ songsData }) {
   const [selectedPayiram, setSelectedPayiram] = useState(null);
@@ -59,7 +60,9 @@ function SongsList({ songsData }) {
           ))}
         </div>
       )}
+      <Footer />
     </div>
+    
   );
 }
 

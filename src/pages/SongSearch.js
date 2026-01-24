@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import googleTransliterate from "google-input-tool";
+import Footer from "../components/Footer";
 
 const uyirList = ["அ", "ஆ", "இ", "ஈ", "உ", "ஊ", "எ", "ஏ", "ஐ", "ஒ", "ஓ", "ஔ"];
 const meiList = ["க்", "ங்", "ச்", "ஞ்", "ட்", "ண்", "த்", "ந்", "ப்", "ம்", "ய்", "ர்", "ல்", "வ்", "ழ்", "ள்", "ற்", "ன்"];
@@ -535,35 +536,7 @@ function SongSearch() {
           ))}
         </div>
       )}
-
-      <footer
-        style={{
-          backgroundColor: "#5A3E36",
-          color: "#F7E6D0",
-          padding: "20px",
-          textAlign: "center",
-          fontSize: "16px",
-          borderRadius: "12px",
-          marginTop: "3rem",
-        }}
-      >
-        <p>
-          Copyright © 2025 | Department of IT, Thiagarajar College of Engineering,
-          Madurai - 625 015, Tamil Nadu, India.
-        </p>
-        <p>
-          Source:{" "}
-          <a
-            href="https://kvnthirumoolar.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: "#D9A299", textDecoration: "underline" }}
-          >
-            திருமூலர் அருளிய திருமந்திரம்
-          </a>{" "}
-          | Google Translator
-        </p>
-      </footer>
+      <Footer />
     </div>
   );
 }

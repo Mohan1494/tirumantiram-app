@@ -1,5 +1,5 @@
 import React from "react";
-
+import Footer from "../components/Footer";
 function Home() {
   return (
     <div
@@ -31,6 +31,7 @@ function Home() {
   <p style={{ fontSize: "1.3rem", lineHeight: "1.6" }}>
     Explore the wisdom of Thirumandiram in Tamil & English.
   </p>
+  <Footer />
 </div>
 
   );
