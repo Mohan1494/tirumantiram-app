@@ -1,13 +1,8 @@
 import React from "react";
-
 function Footer() {
   return (
     <footer
       style={{
-        position: "fixed",
-        bottom: 0,
-        left: 0,
-        width: "100%",
         backgroundColor: "#5A3E36",
         color: "#F7E6D0",
         padding: "20px",
@@ -15,7 +10,6 @@ function Footer() {
         fontSize: "16px",
         borderTopLeftRadius: "12px",
         borderTopRightRadius: "12px",
-        zIndex: 1000,
       }}
     >
       <p>

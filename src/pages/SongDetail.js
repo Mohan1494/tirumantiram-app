@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Footer from "../components/Footer";
+
 
 export default function SongDetail({ songsData }) {
   const { payiramName, songNumber } = useParams();
@@ -40,7 +40,7 @@ export default function SongDetail({ songsData }) {
           <span key={idx}>{line}<br /></span>
         ))}
       </p>
-      <Footer />
+    
     </div>
     
   );

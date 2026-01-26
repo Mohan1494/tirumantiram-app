@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import Footer from "../components/Footer";
 function Ask() {
   const [messages, setMessages] = useState([]);
   const [query, setQuery] = useState("");
@@ -200,7 +199,7 @@ function Ask() {
           Send
         </button>
       </form>
-      <Footer />
+      
     </div>
    
   );
