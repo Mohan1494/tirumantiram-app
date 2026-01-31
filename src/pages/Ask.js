@@ -6,7 +6,7 @@ function Ask() {
   const chatEndRef = useRef(null);
 
   
-   const BASE_URL = "https://guru-25-tm.hf.space";
+   const BASE_URL = "https://mohan1494-tirumantiram-backend.hf.spac";
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
