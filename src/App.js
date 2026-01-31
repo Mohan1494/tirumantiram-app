@@ -7,6 +7,8 @@ import SongsList from "./pages/SongsList";
 import About from "./pages/About";
 import SongDetail from "./pages/SongDetail";
 import SongSearch from "./pages/SongSearch";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import Footer from "./components/Footer"; 
 function App() {
   const [songsData, setSongsData] = useState({});
@@ -38,6 +40,8 @@ function App() {
         <div style={{ flex: 1 }}>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
             <Route path="/ask" element={<Ask />} />
             <Route path="/songs" element={<SongsList songsData={songsData} />} />
             <Route path="/about" element={<About />} />

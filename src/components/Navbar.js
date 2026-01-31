@@ -35,9 +35,14 @@ function Navbar() {
         About Us
       </Link>
       <Link to="/song-search" style={{ color: "#5A3E36", fontWeight: "600", textDecoration: "none" }}>
-    Song Search Page
-  </Link>
-    
+        Song Search Page
+      </Link>
+      {/* <Link to="/login" style={{ color: "#5A3E36", fontWeight: "600", textDecoration: "none" }}>
+        Login
+      </Link>
+      <Link to="/signup" style={{ color: "#5A3E36", fontWeight: "600", textDecoration: "none" }}>
+        Sign Up
+      </Link> */}
     </nav>
   );
 }

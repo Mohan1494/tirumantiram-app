@@ -48,39 +48,44 @@ function Ask() {
       });
 
       // Verses
-      data.results.forEach((r, i) => {
-        botMessages.push({
-          sender: "bot",
-          isHtml: true,
-          text: (
-            <div key={i} style={{ marginBottom: "12px" }}>
-              <strong>{i + 1}. Song #{r.song_number}</strong>
-              <br />
-              <span>
-                பாடல்: {r.padal.slice(0, 80)}
-                {r.padal.length > 80 ? "..." : ""}
-              </span>
-              <br />
-              <span>
-                விளக்கம்: {r.vilakam.slice(0, 80)}
-                {r.vilakam.length > 80 ? "..." : ""}
-              </span>
-              <br />
-              <span>
-                Meaning (English): {r.vilakam_en.slice(0, 80)}
-                {r.vilakam_en.length > 80 ? "..." : ""}
-              </span>
-              <br />
-              <Link
-                to={`/songs/${encodeURIComponent(r.payiram)}/${r.song_number}`}
-                style={{ color: "#2a6f9e", fontWeight: "600" }}
-              >
-                Go to Song
-              </Link>
-            </div>
-          ),
-        });
-      });
+      (data.results || []).forEach((r, i) => {
+  botMessages.push({
+    sender: "bot",
+    isHtml: true,
+    text: (
+      <div key={i} style={{ marginBottom: "12px" }}>
+        <strong>{i + 1}. Song #{r.song_number}</strong>
+        <br />
+
+        <span>
+          பாடல்: {(r.padal || "").slice(0, 80)}
+          {r.padal && r.padal.length > 80 ? "..." : ""}
+        </span>
+        <br />
+
+        <span>
+          விளக்கம்: {(r.vilakam || "").slice(0, 80)}
+          {r.vilakam && r.vilakam.length > 80 ? "..." : ""}
+        </span>
+        <br />
+
+        <span>
+          Meaning (English): {(r.vilakam_en || "").slice(0, 80)}
+          {r.vilakam_en && r.vilakam_en.length > 80 ? "..." : ""}
+        </span>
+        <br />
+
+        <Link
+          to={`/songs/${encodeURIComponent(r.payiram)}/${r.song_number}`}
+          style={{ color: "#2a6f9e", fontWeight: "600" }}
+        >
+          Go to Song
+        </Link>
+      </div>
+    ),
+  });
+});
+
 
       setMessages((msgs) => [...msgs, ...botMessages]);
     } catch (error) {
