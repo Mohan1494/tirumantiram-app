@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Home from "./pages/Home";
 import Ask from "./pages/Ask";
 import SongsList from "./pages/SongsList";
@@ -12,6 +13,14 @@ import Signup from "./pages/Signup";
 import Footer from "./components/Footer"; 
 function App() {
   const [songsData, setSongsData] = useState({});
+
+  useEffect(() => {
+    // Clean up corrupted user data on app startup
+    const user = localStorage.getItem("user");
+    if (user === "undefined" || user === "null" || user === "") {
+      localStorage.removeItem("user");
+    }
+  }, []);
 
   useEffect(() => {
     fetch("/merged_with_fourth_new_line.json")
@@ -42,7 +51,14 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/ask" element={<Ask />} />
+            <Route
+              path="/ask"
+              element={
+                <ProtectedRoute>
+                  <Ask />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/songs" element={<SongsList songsData={songsData} />} />
             <Route path="/about" element={<About />} />
             <Route

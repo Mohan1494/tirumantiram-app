@@ -34,7 +34,15 @@ function Signup() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
+        mode: "cors",
+        credentials: "include",
       });
+
+      if (res.status === 404) {
+        setError("Signup endpoint not found. Please contact admin.");
+        setLoading(false);
+        return;
+      }
 
       const data = await res.json();
 
@@ -44,12 +52,8 @@ function Signup() {
         return;
       }
 
-      // Store token and user info
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-
-      // Redirect to home
-      navigate("/");
+      // Signup successful - redirect to login page to get JWT token
+      navigate("/login", { state: { email } });
     } catch (err) {
       setError("Network error. Please try again.");
       console.error(err);

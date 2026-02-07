@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
+import { setToken, setUser } from "../utils/authUtils";
 
 function Login() {
-  const [email, setEmail] = useState("");
+  const location = useLocation();
+  const [email, setEmail] = useState(location.state?.email || "");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,7 +24,15 @@ function Login() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
+        mode: "cors",
+        credentials: "include",
       });
+
+      if (res.status === 404) {
+        setError("Login endpoint not found. Please contact admin.");
+        setLoading(false);
+        return;
+      }
 
       const data = await res.json();
 
@@ -32,11 +42,13 @@ function Login() {
         return;
       }
 
-      // Store token and user info
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      // Store JWT token and user info using auth utilities
+      setToken(data.token);
+      if (data.user) {
+        setUser(data.user);
+      }
 
-      // Redirect to home or dashboard
+      // Redirect to ask page after successful login
       navigate("/ask");
     } catch (err) {
       setError("Network error. Please try again.");

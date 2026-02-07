@@ -1,15 +1,23 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { getAuthHeaders, isAuthenticated } from "../utils/authUtils";
+
 function Ask() {
   const [messages, setMessages] = useState([]);
   const [query, setQuery] = useState("");
   const chatEndRef = useRef(null);
+  const navigate = useNavigate();
 
+  const BASE_URL = "https://mohan1494-tirumantiram-backend.hf.space";
   
-   const BASE_URL = "https://mohan1494-tirumantiram-backend.hf.space";
   useEffect(() => {
+    // Redirect to login if not authenticated
+    if (!isAuthenticated()) {
+      navigate("/login");
+      return;
+    }
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, navigate]);
 
   async function handleSend() {
     if (!query.trim()) return;
@@ -20,8 +28,29 @@ function Ask() {
 
     try {
       const res = await fetch(
-        `${BASE_URL}/chat_search?q=${encodeURIComponent(userQuery)}`
+        `${BASE_URL}/chat_search?q=${encodeURIComponent(userQuery)}`,
+        {
+          method: "GET",
+          headers: getAuthHeaders(),
+          mode: "cors",
+          credentials: "include",
+        }
       );
+      
+      // Handle 401 Unauthorized (token expired)
+      if (res.status === 401) {
+        setMessages((msgs) => [
+          ...msgs,
+          {
+            sender: "bot",
+            text: "⚠️ Your session has expired. Please login again.",
+            isHtml: false,
+          },
+        ]);
+        navigate("/login");
+        return;
+      }
+
       const data = await res.json();
 
       // 🔴 OUT OF SCOPE CASE
