@@ -1,0 +1,233 @@
+/* Ask Page Styles */
+
+.ask-container {
+    display: flex;
+    height: calc(100vh - 80px);
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.chat-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    max-width: 900px;
+    margin: 20px auto;
+    width: 100%;
+    border: 1px solid #DCC5B2;
+    border-radius: 15px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    background-color: #FFF;
+}
+
+/* Chat Header */
+.chat-header {
+    padding: 15px 20px;
+    background: linear-gradient(to right, #F0E4D3, #FAF7F3);
+    border-bottom: 1px solid #DCC5B2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.chat-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #5A3E36;
+    font-weight: 600;
+    flex: 1;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.menu-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #5A3E36;
+    padding: 5px 10px;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+}
+
+.menu-btn:hover {
+    background-color: rgba(217, 162, 153, 0.2);
+}
+
+/* Messages Area */
+.messages-area {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: rgba(250, 247, 243, 0.6);
+    display: flex;
+    flex-direction: column;
+}
+
+.messages-area::-webkit-scrollbar {
+    width: 8px;
+}
+
+.messages-area::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.messages-area::-webkit-scrollbar-thumb {
+    background: #DCC5B2;
+    border-radius: 4px;
+}
+
+.empty-chat-state {
+    text-align: center;
+    color: #5A3E36;
+    margin-top: 3rem;
+    font-size: 1.1rem;
+}
+
+/* Typing Indicator */
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    padding: 12px 18px;
+    background-color: #F0E4D3;
+    border-radius: 20px;
+    max-width: 60px;
+    margin-bottom: 15px;
+}
+
+.typing-indicator span {
+    height: 8px;
+    width: 8px;
+    margin: 0 2px;
+    background-color: #8B7355;
+    border-radius: 50%;
+    display: inline-block;
+    animation: typing 1.4s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.typing-indicator span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing {
+
+    0%,
+    60%,
+    100% {
+        transform: translateY(0);
+        opacity: 0.5;
+    }
+
+    30% {
+        transform: translateY(-10px);
+        opacity: 1;
+    }
+}
+
+/* Input Area */
+.input-area {
+    display: flex;
+    padding: 15px 20px;
+    background-color: #FFF;
+    border-top: 1px solid #DCC5B2;
+    gap: 15px;
+}
+
+.input-area textarea {
+    flex: 1;
+    resize: none;
+    padding: 12px 18px;
+    border-radius: 20px;
+    border: 1px solid #DCC5B2;
+    font-size: 1rem;
+    font-family: inherit;
+    max-height: 120px;
+    min-height: 42px;
+    transition: border-color 0.2s;
+}
+
+.input-area textarea:focus {
+    outline: none;
+    border-color: #D9A299;
+}
+
+.input-area textarea:disabled {
+    background-color: #F5F5F5;
+    cursor: not-allowed;
+}
+
+.input-area button {
+    background-color: #D9A299;
+    color: #5A3E36;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 24px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.input-area button:hover:not(:disabled) {
+    background-color: #C98D84;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.input-area button:disabled {
+    background-color: #E5D5D0;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .ask-container {
+        height: calc(100vh - 60px);
+    }
+
+    .chat-area {
+        margin: 0;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+    }
+
+    .chat-header h2 {
+        font-size: 1rem;
+    }
+
+    .messages-area {
+        padding: 15px;
+    }
+
+    .input-area {
+        padding: 12px 15px;
+        gap: 10px;
+    }
+
+    .input-area button {
+        padding: 10px 18px;
+    }
+}
+
+/* Tablet */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .chat-area {
+        margin: 20px;
+    }
+}

@@ -43,7 +43,7 @@ function Login() {
       }
 
       // Store JWT token and user info using auth utilities
-      setToken(data.token);
+      setToken(data.access_token || data.token);
       if (data.user) {
         setUser(data.user);
       }
