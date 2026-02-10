@@ -23,38 +23,48 @@ function Ask() {
   const navigate = useNavigate();
 
   // Helper to render a verse item
-  const renderVerse = (r, i) => (
-    <div key={i} style={{ marginBottom: "12px" }}>
-      <Link
-        to={`/songs/${encodeURIComponent(r.payiram || r.payiramName)}/${r.song_number}`}
-        style={{ color: "#2a6f9e", fontWeight: "bold", textDecoration: "underline" }}
-      >
-        <strong>{i + 1}. Song #{r.song_number}</strong>
-      </Link>
-      <br />
-      <span>
-        பாடல்: {(r.padal || "").slice(0, 80)}
-        {r.padal && r.padal.length > 80 ? "..." : ""}
-      </span>
-      <br />
-      <span>
-        விளக்கம்: {(r.vilakam || "").slice(0, 80)}
-        {r.vilakam && r.vilakam.length > 80 ? "..." : ""}
-      </span>
-      <br />
-      <span>
-        Meaning (English): {(r.vilakam_en || "").slice(0, 80)}
-        {r.vilakam_en && r.vilakam_en.length > 80 ? "..." : ""}
-      </span>
-      <br />
-      <Link
-        to={`/songs/${encodeURIComponent(r.payiram || r.payiramName)}/${r.song_number}`}
-        style={{ color: "#2a6f9e", fontWeight: "600" }}
-      >
-        Go to Song
-      </Link>
-    </div>
-  );
+  function renderVerse(r, i) {
+    if (!r) return null;
+
+    // Backend uses 'vilakkam', frontend used 'vilakam' - support both
+    const tamilVilakkam = r.vilakkam || r.vilakam || "";
+    const englishVilakkam = r.vilakkam_en || r.vilakam_en || "";
+    const payiramName = r.payiram || r.payiramName || "Unknown Payiram";
+    const songNum = r.song_number || r.song_no || "";
+
+    return (
+      <div key={i} style={{ marginBottom: "12px" }}>
+        <Link
+          to={`/songs/${encodeURIComponent(payiramName)}/${songNum}`}
+          style={{ color: "#2a6f9e", fontWeight: "bold", textDecoration: "underline" }}
+        >
+          <strong>{i + 1}. Song #{songNum}</strong>
+        </Link>
+        <br />
+        <span>
+          பாடல்: {(r.padal || "").slice(0, 80)}
+          {r.padal && r.padal.length > 80 ? "..." : ""}
+        </span>
+        <br />
+        <span>
+          விளக்கம்: {(tamilVilakkam || "").slice(0, 80)}
+          {tamilVilakkam && tamilVilakkam.length > 80 ? "..." : ""}
+        </span>
+        <br />
+        <span>
+          Meaning (English): {(englishVilakkam || "").slice(0, 80)}
+          {englishVilakkam && englishVilakkam.length > 80 ? "..." : ""}
+        </span>
+        <br />
+        <Link
+          to={`/songs/${encodeURIComponent(payiramName)}/${songNum}`}
+          style={{ color: "#2a6f9e", fontWeight: "600" }}
+        >
+          Go to Song
+        </Link>
+      </div>
+    );
+  }
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -71,6 +81,7 @@ function Ask() {
     if (lastSessionId) {
       loadConversation(lastSessionId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
   // Auto-scroll to latest message
@@ -128,7 +139,8 @@ function Ask() {
 
         if (metadata) {
           // Check for common keys where verses might be stored
-          const verses = metadata.results || metadata.search_results || metadata.verses || [];
+          // Backend uses 'search_results' or 'results'
+          const verses = metadata.search_results || metadata.results || metadata.verses || [];
           if (Array.isArray(verses) && verses.length > 0) {
             console.log(`Found ${verses.length} verses in metadata`);
             verses.forEach((r, i) => {
@@ -137,7 +149,7 @@ function Ask() {
                 role: msg.role,
                 isHtml: true,
                 text: renderVerse(r, i),
-                content: `Verse ${i + 1}: Song #${r.song_number}`,
+                content: `Verse ${i + 1}: Song #${r.song_number || r.song_no || ""}`,
                 timestamp: msg.timestamp,
               });
             });
