@@ -9,6 +9,11 @@ import {
 } from "../services/conversationService";
 import ConversationSidebar from "../components/ConversationSidebar";
 import ChatMessage from "../components/ChatMessage";
+import {
+  startRecording,
+  stopRecording,
+  transcribeAudio,
+} from "../services/sttService";
 import "./Ask.css";
 
 function Ask() {
@@ -19,6 +24,7 @@ function Ask() {
   const [conversationTitle, setConversationTitle] = useState("New Conversation");
   const [isLoading, setIsLoading] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
   const chatEndRef = useRef(null);
   const navigate = useNavigate();
 
@@ -306,6 +312,35 @@ function Ask() {
     }
   }
 
+  // Handle Microphone click
+  async function handleMicClick() {
+    if (isRecording) {
+      // Stop recording
+      setIsRecording(false);
+      setIsLoading(true);
+      const audioBlob = await stopRecording();
+      if (audioBlob) {
+        const text = await transcribeAudio(audioBlob);
+        if (text) {
+          if (text.startsWith("ERROR:")) {
+            alert(text);
+          } else {
+            setQuery(text);
+          }
+        }
+      }
+      setIsLoading(false);
+    } else {
+      // Start recording
+      const success = await startRecording();
+      if (success) {
+        setIsRecording(true);
+      } else {
+        alert("Could not access microphone.");
+      }
+    }
+  }
+
   function handleKeyDown(e) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -371,15 +406,32 @@ function Ask() {
           e.preventDefault();
           handleSend();
         }}>
+          <button
+            type="button"
+            className={`mic-btn ${isRecording ? "recording" : ""}`}
+            onClick={handleMicClick}
+            disabled={isLoading}
+            title={isRecording ? "Stop Recording" : "Start Voice Input"}
+          >
+            {isRecording ? (
+              <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                <path d="M6 6h12v12H6z" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" /><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
+              </svg>
+            )}
+          </button>
           <textarea
             rows={1}
             value={query}
-            placeholder="Type your question here..."
+            placeholder={isRecording ? "Listening..." : "Type your question here..."}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            disabled={isLoading}
+            disabled={isLoading || isRecording}
           />
-          <button type="submit" disabled={isLoading || !query.trim()}>
+          <button type="submit" disabled={isLoading || isRecording || !query.trim()}>
             {isLoading ? "..." : "Send"}
           </button>
         </form>
