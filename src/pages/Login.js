@@ -44,9 +44,13 @@ function Login() {
 
       // Store JWT token and user info using auth utilities
       setToken(data.access_token || data.token);
-      if (data.user) {
-        setUser(data.user);
+      // always store at least an object with email so navbar can show username
+      const storedUser = data.user || { email };
+      // if backend didn't supply a name/username, derive from email
+      if (!storedUser.name && storedUser.email) {
+        storedUser.name = storedUser.email.split("@")[0];
       }
+      setUser(storedUser);
 
       // Redirect to ask page after successful login
       navigate("/ask");
@@ -62,26 +66,21 @@ function Login() {
     <div
       style={{
         padding: "40px 20px",
-        margin: "40px auto",
-        backgroundImage: "url('/background.png')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
+        margin: "60px auto",
         height: "auto",
         width: "100%",
-        maxWidth: "450px",
-        backgroundColor: "rgba(255, 255, 255, 0.8)",
-        backgroundBlendMode: "overlay",
-        borderRadius: "15px",
-        boxShadow: "0 8px 24px rgba(0, 0, 0, 0.12)",
-        color: "#5A3E36",
-        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+        maxWidth: "420px",
+        backgroundColor: "var(--header-bg)",
+        borderRadius: "12px",
+        boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)",
+        color: "var(--text-color)",
+        fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif",
       }}
     >
       <h1 style={{ fontSize: "2.2rem", marginBottom: "10px", fontWeight: "700", textAlign: "center" }}>
         Login
       </h1>
-      <p style={{ fontSize: "1rem", textAlign: "center", marginBottom: "30px", color: "#7A5C54" }}>
+      <p style={{ fontSize: "1rem", textAlign: "center", marginBottom: "30px", color: "var(--text-color)" }}>
         Welcome back to Thirumandiram AI
       </p>
 
@@ -90,11 +89,11 @@ function Login() {
           style={{
             padding: "12px 16px",
             marginBottom: "20px",
-            backgroundColor: "#ffebee",
+            backgroundColor: "rgba(255,0,0,0.1)",
             color: "#c62828",
             borderRadius: "8px",
             fontSize: "0.95rem",
-            border: "1px solid #ef5350",
+            border: "1px solid #c62828",
           }}
         >
           ⚠️ {error}
@@ -108,7 +107,7 @@ function Login() {
               display: "block",
               marginBottom: "6px",
               fontWeight: "600",
-              color: "#5A3E36",
+              color: "var(--text-color)",
               fontSize: "0.95rem",
             }}
           >
@@ -122,21 +121,21 @@ function Login() {
             style={{
               width: "100%",
               padding: "12px 14px",
-              border: "2px solid #D9A299",
+              border: "2px solid var(--input-border)",
               borderRadius: "8px",
               fontSize: "1rem",
               fontFamily: "inherit",
               boxSizing: "border-box",
-              backgroundColor: "#FAF7F3",
-              color: "#5A3E36",
+              backgroundColor: "#ffffff",
+              color: "var(--text-color)",
               transition: "border-color 0.3s",
             }}
             onFocus={(e) => {
-              e.target.style.borderColor = "#B8857B";
+              e.target.style.borderColor = "var(--accent-color)";
               e.target.style.outline = "none";
             }}
             onBlur={(e) => {
-              e.target.style.borderColor = "#D9A299";
+              e.target.style.borderColor = "var(--input-border)";
             }}
           />
         </div>
@@ -147,7 +146,7 @@ function Login() {
               display: "block",
               marginBottom: "6px",
               fontWeight: "600",
-              color: "#5A3E36",
+              color: "var(--text-color)",
               fontSize: "0.95rem",
             }}
           >
@@ -161,21 +160,21 @@ function Login() {
             style={{
               width: "100%",
               padding: "12px 14px",
-              border: "2px solid #D9A299",
+              border: "2px solid var(--input-border)",
               borderRadius: "8px",
               fontSize: "1rem",
               fontFamily: "inherit",
               boxSizing: "border-box",
-              backgroundColor: "#FAF7F3",
-              color: "#5A3E36",
+              backgroundColor: "#ffffff",
+              color: "var(--text-color)",
               transition: "border-color 0.3s",
             }}
             onFocus={(e) => {
-              e.target.style.borderColor = "#B8857B";
+              e.target.style.borderColor = "var(--accent-color)";
               e.target.style.outline = "none";
             }}
             onBlur={(e) => {
-              e.target.style.borderColor = "#D9A299";
+              e.target.style.borderColor = "var(--input-border)";
             }}
           />
         </div>
@@ -186,7 +185,7 @@ function Login() {
           style={{
             padding: "12px 20px",
             marginTop: "10px",
-            backgroundColor: loading ? "#D9A299" : "#B8857B",
+            backgroundColor: loading ? "var(--input-border)" : "var(--accent-color)",
             color: "white",
             border: "none",
             borderRadius: "8px",
@@ -196,7 +195,7 @@ function Login() {
             transition: "background-color 0.3s",
           }}
           onHover={(e) => {
-            if (!loading) e.target.style.backgroundColor = "#A67168";
+            if (!loading) e.target.style.backgroundColor = "var(--accent-color)";
           }}
           onMouseEnter={(e) => {
             if (!loading) e.target.style.backgroundColor = "#A67168";

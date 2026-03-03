@@ -2,10 +2,11 @@
 
 .ask-container {
     display: flex;
-    height: calc(100vh - 80px);
+    height: calc(100vh - 70px);
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
 }
 
 .chat-area {
@@ -13,7 +14,7 @@
     display: flex;
     flex-direction: column;
     max-width: 900px;
-    margin: 20px auto;
+    margin: 15px auto;
     width: 100%;
     border: 1px solid #DCC5B2;
     border-radius: 15px;
@@ -197,7 +198,7 @@
 /* Mobile Responsive */
 @media (max-width: 768px) {
     .ask-container {
-        height: calc(100vh - 60px);
+        height: calc(100vh - 70px);
     }
 
     .chat-area {
@@ -227,9 +228,9 @@
 
 /* Mic Button Styles */
 .mic-btn {
-    background-color: #F0E4D3;
-    color: #5A3E36;
-    border: 1px solid #DCC5B2;
+    background-color: #5A3E36; /* dark accent so icon shows */
+    color: #ffffff;
+    border: 1px solid #4b3f3a;
     border-radius: 50%;
     width: 44px;
     min-width: 44px;
@@ -244,14 +245,15 @@
 }
 
 .mic-btn:hover:not(:disabled) {
-    background-color: #E5D5D0;
-    border-color: #D9A299;
+    background-color: #423732;
+    border-color: #3a322f;
 }
 
 .mic-btn svg {
     display: block;
     width: 24px;
     height: 24px;
+    fill: currentColor;
 }
 
 .mic-btn.recording {

@@ -59,14 +59,16 @@ function Navbar() {
       style={{
         height: "70px",
         padding: "0 30px",
-        background: "rgba(255, 255, 255, 0.25)",
+        background: "var(--header-bg, rgba(255,255,255,0.95))",
         backdropFilter: "blur(10px)",
         WebkitBackdropFilter: "blur(10px)",
         boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-        borderRadius: "10px",
-        position: "sticky",
-        top: "30px",
-        margin: "0 20px",
+        borderRadius: "0px",
+        position: "fixed",
+        top: "0",
+        left: "0",
+        right: "0",
+        margin: "0",
         zIndex: 1000,
         display: "flex",
         alignItems: "center",
@@ -76,19 +78,19 @@ function Navbar() {
     >
       {/* Left Navigation Links */}
       <div style={{ display: "flex", gap: "40px", alignItems: "center" }}>
-        <Link to="/" style={{ color: "#5A3E36", fontWeight: "600", textDecoration: "none" }}>
+        <Link to="/" style={{ color: "var(--text-color)", fontWeight: "600", textDecoration: "none" }}>
           Home
         </Link>
-        <Link to="/ask" style={{ color: "#5A3E36", fontWeight: "600", textDecoration: "none" }}>
+        <Link to="/ask" style={{ color: "var(--text-color)", fontWeight: "600", textDecoration: "none" }}>
           Ask Your Question
         </Link>
-        <Link to="/songs" style={{ color: "#5A3E36", fontWeight: "600", textDecoration: "none" }}>
+        <Link to="/songs" style={{ color: "var(--text-color)", fontWeight: "600", textDecoration: "none" }}>
           Songs List
         </Link>
-        <Link to="/about" style={{ color: "#5A3E36", fontWeight: "600", textDecoration: "none" }}>
+        <Link to="/about" style={{ color: "var(--text-color)", fontWeight: "600", textDecoration: "none" }}>
           About Us
         </Link>
-        <Link to="/song-search" style={{ color: "#5A3E36", fontWeight: "600", textDecoration: "none" }}>
+        <Link to="/song-search" style={{ color: "var(--text-color)", fontWeight: "600", textDecoration: "none" }}>
           Song Search Page
         </Link>
       </div>
@@ -105,8 +107,8 @@ function Navbar() {
                 alignItems: "center",
                 gap: "8px",
                 padding: "8px 14px",
-                backgroundColor: "#B8857B",
-                color: "white",
+                backgroundColor: "var(--accent-color)",
+                color: "black",
                 border: "none",
                 borderRadius: "20px",
                 fontWeight: "600",
@@ -115,14 +117,16 @@ function Navbar() {
                 fontSize: "0.95rem",
               }}
               onMouseEnter={(e) => {
-                e.target.style.backgroundColor = "#A67168";
+                e.target.style.backgroundColor = "var(--accent-color)";
+                e.target.style.color = "black";
               }}
               onMouseLeave={(e) => {
-                e.target.style.backgroundColor = "#B8857B";
+                e.target.style.backgroundColor = "var(--accent-color)";
+                e.target.style.color = "black";
               }}
             >
               <span style={{ fontSize: "1.2rem" }}>👤</span>
-              {user?.email ? user.email.split("@")[0] : "Profile"}
+              {user?.name || (user?.email ? user.email.split("@")[0] : "Profile")}
               <span style={{ fontSize: "0.8rem", marginLeft: "4px" }}>▼</span>
             </button>
 
@@ -134,8 +138,8 @@ function Navbar() {
                   top: "100%",
                   right: 0,
                   marginTop: "8px",
-                  backgroundColor: "white",
-                  border: "2px solid #D9A299",
+                    backgroundColor: "var(--header-bg)",
+                    border: "2px solid var(--input-border)",
                   borderRadius: "8px",
                   boxShadow: "0 8px 16px rgba(0, 0, 0, 0.15)",
                   minWidth: "200px",
@@ -147,10 +151,10 @@ function Navbar() {
                 <div
                   style={{
                     padding: "12px 16px",
-                    borderBottom: "1px solid #E8D8C3",
-                    backgroundColor: "#FAF7F3",
+                    borderBottom: "1px solid var(--input-border)",
+                    backgroundColor: "var(--input-bg)",
                     fontSize: "0.85rem",
-                    color: "#7A5C54",
+                    color: "var(--text-color)",
                   }}
                 >
                   <strong>Logged in as</strong>
@@ -175,7 +179,7 @@ function Navbar() {
                     transition: "background-color 0.2s",
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = "#ffebee";
+                    e.target.style.backgroundColor = "rgba(255,0,0,0.1)";
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.backgroundColor = "transparent";

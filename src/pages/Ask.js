@@ -23,7 +23,7 @@ function Ask() {
   const [conversations, setConversations] = useState([]);
   const [conversationTitle, setConversationTitle] = useState("New Conversation");
   const [isLoading, setIsLoading] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 768);
   const [isRecording, setIsRecording] = useState(false);
   const chatEndRef = useRef(null);
   const navigate = useNavigate();
@@ -78,6 +78,9 @@ function Ask() {
       navigate("/login");
       return;
     }
+
+    // Scroll to top on mount
+    window.scrollTo(0, 0);
 
     // Load conversations on mount
     loadConversations();
@@ -387,7 +390,7 @@ function Ask() {
           )}
 
           {messages.map((msg, idx) => (
-            <ChatMessage key={idx} message={msg} showTimestamp={true} />
+            <ChatMessage key={idx} message={msg} showTimestamp={false} />
           ))}
 
           {isLoading && (
@@ -431,8 +434,25 @@ function Ask() {
             onKeyDown={handleKeyDown}
             disabled={isLoading || isRecording}
           />
-          <button type="submit" disabled={isLoading || isRecording || !query.trim()}>
-            {isLoading ? "..." : "Send"}
+          <button
+            type="submit"
+            disabled={isLoading || isRecording || !query.trim()}
+            aria-label="Send message"
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
+            {isLoading ? (
+              "..."
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                width="20"
+                height="20"
+              >
+                <path d="M2 21l21-9L2 3v7l15 2-15 2v7z" />
+              </svg>
+            )}
           </button>
         </form>
       </div>

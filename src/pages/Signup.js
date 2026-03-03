@@ -66,26 +66,21 @@ function Signup() {
     <div
       style={{
         padding: "40px 20px",
-        margin: "40px auto",
-        backgroundImage: "url('/background.png')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
+        margin: "60px auto",
         height: "auto",
         width: "100%",
-        maxWidth: "450px",
-        backgroundColor: "rgba(255, 255, 255, 0.8)",
-        backgroundBlendMode: "overlay",
-        borderRadius: "15px",
-        boxShadow: "0 8px 24px rgba(0, 0, 0, 0.12)",
-        color: "#5A3E36",
-        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+        maxWidth: "420px",
+        backgroundColor: "var(--header-bg)",
+        borderRadius: "12px",
+        boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)",
+        color: "var(--text-color)",
+        fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif",
       }}
     >
       <h1 style={{ fontSize: "2.2rem", marginBottom: "10px", fontWeight: "700", textAlign: "center" }}>
         Sign Up
       </h1>
-      <p style={{ fontSize: "1rem", textAlign: "center", marginBottom: "30px", color: "#7A5C54" }}>
+      <p style={{ fontSize: "1rem", textAlign: "center", marginBottom: "30px", color: "var(--text-color)" }}>
         Join us to explore Thirumandiram
       </p>
 
@@ -94,11 +89,11 @@ function Signup() {
           style={{
             padding: "12px 16px",
             marginBottom: "20px",
-            backgroundColor: "#ffebee",
+            backgroundColor: "rgba(255,0,0,0.1)",
             color: "#c62828",
             borderRadius: "8px",
             fontSize: "0.95rem",
-            border: "1px solid #ef5350",
+            border: "1px solid #c62828",
           }}
         >
           ⚠️ {error}
@@ -112,7 +107,7 @@ function Signup() {
               display: "block",
               marginBottom: "6px",
               fontWeight: "600",
-              color: "#5A3E36",
+              color: "var(--text-color)",
               fontSize: "0.95rem",
             }}
           >
@@ -126,21 +121,21 @@ function Signup() {
             style={{
               width: "100%",
               padding: "12px 14px",
-              border: "2px solid #D9A299",
+              border: "2px solid var(--input-border)",
               borderRadius: "8px",
               fontSize: "1rem",
               fontFamily: "inherit",
               boxSizing: "border-box",
-              backgroundColor: "#FAF7F3",
-              color: "#5A3E36",
+              backgroundColor: "#ffffff",
+              color: "var(--text-color)",
               transition: "border-color 0.3s",
             }}
             onFocus={(e) => {
-              e.target.style.borderColor = "#B8857B";
+              e.target.style.borderColor = "var(--accent-color)";
               e.target.style.outline = "none";
             }}
             onBlur={(e) => {
-              e.target.style.borderColor = "#D9A299";
+              e.target.style.borderColor = "var(--input-border)";
             }}
           />
         </div>
@@ -151,7 +146,7 @@ function Signup() {
               display: "block",
               marginBottom: "6px",
               fontWeight: "600",
-              color: "#5A3E36",
+              color: "var(--text-color)",
               fontSize: "0.95rem",
             }}
           >
@@ -165,23 +160,24 @@ function Signup() {
             style={{
               width: "100%",
               padding: "12px 14px",
-              border: "2px solid #D9A299",
+              border: "2px solid var(--input-border)",
               borderRadius: "8px",
               fontSize: "1rem",
               fontFamily: "inherit",
               boxSizing: "border-box",
-              backgroundColor: "#FAF7F3",
-              color: "#5A3E36",
+              backgroundColor: "#ffffff",
+              color: "var(--text-color)",
               transition: "border-color 0.3s",
             }}
             onFocus={(e) => {
-              e.target.style.borderColor = "#B8857B";
+              e.target.style.borderColor = "var(--accent-color)";
               e.target.style.outline = "none";
             }}
             onBlur={(e) => {
-              e.target.style.borderColor = "#D9A299";
+              e.target.style.borderColor = "var(--input-border)";
             }}
           />
+
           <p style={{ fontSize: "0.85rem", color: "#9A7A72", marginTop: "4px" }}>
             At least 6 characters
           </p>
@@ -193,7 +189,7 @@ function Signup() {
               display: "block",
               marginBottom: "6px",
               fontWeight: "600",
-              color: "#5A3E36",
+              color: "var(--text-color)",
               fontSize: "0.95rem",
             }}
           >
@@ -207,23 +203,24 @@ function Signup() {
             style={{
               width: "100%",
               padding: "12px 14px",
-              border: "2px solid #D9A299",
+              border: "2px solid var(--input-border)",
               borderRadius: "8px",
               fontSize: "1rem",
               fontFamily: "inherit",
               boxSizing: "border-box",
-              backgroundColor: "#FAF7F3",
-              color: "#5A3E36",
+              backgroundColor: "#ffffff",
+              color: "var(--text-color)",
               transition: "border-color 0.3s",
             }}
             onFocus={(e) => {
-              e.target.style.borderColor = "#B8857B";
+              e.target.style.borderColor = "var(--accent-color)";
               e.target.style.outline = "none";
             }}
             onBlur={(e) => {
-              e.target.style.borderColor = "#D9A299";
+              e.target.style.borderColor = "var(--input-border)";
             }}
           />
+
         </div>
 
         <button
@@ -232,7 +229,7 @@ function Signup() {
           style={{
             padding: "12px 20px",
             marginTop: "10px",
-            backgroundColor: loading ? "#D9A299" : "#B8857B",
+            backgroundColor: loading ? "var(--input-border)" : "var(--accent-color)",
             color: "white",
             border: "none",
             borderRadius: "8px",
@@ -242,31 +239,31 @@ function Signup() {
             transition: "background-color 0.3s",
           }}
           onMouseEnter={(e) => {
-            if (!loading) e.target.style.backgroundColor = "#A67168";
+            if (!loading) e.target.style.backgroundColor = "var(--accent-color)";
           }}
           onMouseLeave={(e) => {
-            if (!loading) e.target.style.backgroundColor = "#B8857B";
+            if (!loading) e.target.style.backgroundColor = "var(--accent-color)";
           }}
         >
           {loading ? "Creating account..." : "Sign Up"}
         </button>
       </form>
 
-      <p style={{ textAlign: "center", marginTop: "20px", fontSize: "0.95rem", color: "#7A5C54" }}>
+      <p style={{ textAlign: "center", marginTop: "20px", fontSize: "0.95rem", color: "var(--text-color)" }}>
         Already have an account?{" "}
         <Link
           to="/login"
           style={{
-            color: "#B8857B",
+            color: "var(--accent-color)",
             textDecoration: "none",
             fontWeight: "600",
             transition: "color 0.3s",
           }}
           onMouseEnter={(e) => {
-            e.target.style.color = "#8B6459";
+            e.target.style.color = "var(--accent-color)";
           }}
           onMouseLeave={(e) => {
-            e.target.style.color = "#B8857B";
+            e.target.style.color = "var(--accent-color)";
           }}
         >
           Login here

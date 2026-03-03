@@ -46,7 +46,7 @@ function App() {
         <Navbar />
 
         {/* MAIN CONTENT */}
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 1, marginTop: "70px" }}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
