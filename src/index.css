@@ -1,19 +1,65 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* ─── CSS Variables ─────────────────────────────────────── */
+:root {
+  --accent:        #D9A299;
+  --accent-dark:   #C98D84;
+  --accent-deeper: #A67168;
+  --text:          #5A3E36;
+  --text-light:    #8B7355;
+  --bg-warm:       #FAF7F3;
+  --bg-mid:        #F0E4D3;
+  --border:        #DCC5B2;
+  --header-bg:     rgba(255, 255, 255, 0.95);
+  --nav-height:    64px;
+  --radius-sm:     8px;
+  --radius-md:     12px;
+  --radius-lg:     20px;
+  --shadow-sm:     0 2px 8px rgba(90,62,54,0.10);
+  --shadow-md:     0 6px 20px rgba(90,62,54,0.14);
+  --shadow-lg:     0 10px 32px rgba(90,62,54,0.18);
+
+  /* legacy aliases used by existing components */
+  --header-bg:     rgba(255, 255, 255, 0.95);
+  --input-border:  #DCC5B2;
+  --input-bg:      #FAF7F3;
+  --text-color:    #5A3E36;
+  --accent-color:  #D9A299;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
+/* ─── Reset / Base ──────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
 
 html, body, #root {
   height: 100%;
   margin: 0;
+  padding: 0;
 }
 
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+    'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--text);
+  /* prevent horizontal overflow on mobile */
+  overflow-x: hidden;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+/* ─── Scrollbar (webkit) ────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ─── Touch targets: min 44 px for all interactive elements  */
+button, a, [role="button"] { min-height: 44px; }
+
+/* ─── Utility: visually-hidden (for screen readers) ─────── */
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}

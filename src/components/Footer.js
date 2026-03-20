@@ -1,17 +1,9 @@
 import React from "react";
+import "./Footer.css";
+
 function Footer() {
   return (
-    <footer
-      style={{
-        backgroundColor: "#5A3E36",
-        color: "#F7E6D0",
-        padding: "20px",
-        textAlign: "center",
-        fontSize: "16px",
-        borderTopLeftRadius: "12px",
-        borderTopRightRadius: "12px",
-      }}
-    >
+    <footer className="site-footer">
       <p>
         Copyright © 2025 | Department of IT, Thiagarajar College of Engineering,
         Madurai - 625 015, Tamil Nadu, India.
@@ -22,7 +14,7 @@ function Footer() {
           href="https://kvnthirumoolar.com/"
           target="_blank"
           rel="noopener noreferrer"
-          style={{ color: "#D9A299", textDecoration: "underline" }}
+          className="footer-link"
         >
           திருமூலர் அருளிய திருமந்திரம்
         </a>{" "}

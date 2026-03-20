@@ -10,12 +10,12 @@ import SongDetail from "./pages/SongDetail";
 import SongSearch from "./pages/SongSearch";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import Footer from "./components/Footer"; 
+import Footer from "./components/Footer";
+
 function App() {
   const [songsData, setSongsData] = useState({});
 
   useEffect(() => {
-    // Clean up corrupted user data on app startup
     const user = localStorage.getItem("user");
     if (user === "undefined" || user === "null" || user === "") {
       localStorage.removeItem("user");
@@ -23,10 +23,25 @@ function App() {
   }, []);
 
   useEffect(() => {
-    fetch("/merged_with_fourth_new_line.json")
-      .then((res) => res.json())
-      .then((data) => setSongsData(data))
-      .catch((err) => console.error(err));
+    const loadSongs = async () => {
+      try {
+        const res = await fetch("/merged_with_fourth_new_line.json");
+        if (!res.ok) throw new Error("Merged songs fetch failed");
+        const data = await res.json();
+        setSongsData(data);
+      } catch (err) {
+        console.warn("Failed to load merged songs data, falling back to songs.json", err);
+        try {
+          const res = await fetch("/songs.json");
+          if (!res.ok) throw new Error("Fallback songs fetch failed");
+          const fallbackData = await res.json();
+          setSongsData(fallbackData);
+        } catch (fallbackErr) {
+          console.error("Failed to load songs data:", fallbackErr);
+        }
+      }
+    };
+    loadSongs();
   }, []);
 
   if (Object.keys(songsData).length === 0) {
@@ -45,8 +60,13 @@ function App() {
       >
         <Navbar />
 
-        {/* MAIN CONTENT */}
-        <div style={{ flex: 1, marginTop: "70px" }}>
+        {/* MAIN CONTENT — block layout so margin:auto centering works on children */}
+        <div style={{
+          flex: 1,
+          marginTop: "64px",   /* matches --nav-height */
+          display: "block",    /* NOT flex — allows children to use margin:0 auto */
+          width: "100%",
+        }}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />

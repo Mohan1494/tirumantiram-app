@@ -6,9 +6,26 @@ export default function SongDetail({ songsData }) {
   const { payiramName, songNumber } = useParams();
   const navigate = useNavigate();
 
-  const song = songsData[payiramName]?.find((s) => s.song_number === parseInt(songNumber));
+  const normalizedPayiram = payiramName
+    ? decodeURIComponent(payiramName).replace(/\+/g, " ")
+    : "";
+  const payiramKey = songsData[normalizedPayiram] ? normalizedPayiram : payiramName;
+
+  const song = (songsData[payiramKey] || []).find(
+    (s) => s.song_number === parseInt(songNumber, 10)
+  );
 
   if (!song) return <p style={{ textAlign: "center", marginTop: "50px" }}>Song not found</p>;
+
+  const formatLines = (text = "") =>
+    text
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line !== "" && line !== ":");
+
+  const padalLines = formatLines(song.padal);
+  const vilakamLines = formatLines(song.vilakam || song.vilakkam || "");
+  const vilakamEnLines = formatLines(song.vilakam_en || song.vilakkam_en || "");
 
   return (
     <div style={{ padding: "30px", maxWidth: "1000px", margin: "0 auto", color: "#5A3E36" }}>
@@ -23,20 +40,20 @@ export default function SongDetail({ songsData }) {
 
       <p>
         <strong>பாடல்:</strong><br />
-        {(song.padal || "").split("\n").map((line, idx) => (
+        {padalLines.map((line, idx) => (
           <span key={idx}>{line}<br /></span>
         ))}
       </p>
 
       <p style={{ marginTop: "15px" }}>
         <strong>விளக்கம் (Tamil):</strong><br />
-        {(song.vilakam || "").split("\n").map((line, idx) => (
+        {vilakamLines.map((line, idx) => (
           <span key={idx}>{line}<br /></span>
         ))}
       </p>
       <p style={{ marginTop: "15px" }}>
         <strong>Explanation (English):</strong><br />
-        {(song.vilakam_en || "").split("\n").map((line, idx) => (
+        {vilakamEnLines.map((line, idx) => (
           <span key={idx}>{line}<br /></span>
         ))}
       </p>

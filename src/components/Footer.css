@@ -1,0 +1,24 @@
+/* ─── Footer ─────────────────────────────────────────────── */
+.site-footer {
+  background-color: #5A3E36;
+  color: #F7E6D0;
+  padding: 20px 24px;
+  text-align: center;
+  font-size: clamp(0.8rem, 2vw, 0.95rem);
+  line-height: 1.6;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.site-footer p { margin: 6px 0; }
+
+.footer-link {
+  color: #D9A299;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+.footer-link:hover { color: #fff; }
+
+@media (max-width: 480px) {
+  .site-footer { padding: 16px 12px; border-radius: 0; }
+}

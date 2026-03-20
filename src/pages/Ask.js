@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { isAuthenticated } from "../utils/authUtils";
 import {
   sendMessage,
@@ -25,52 +25,31 @@ function Ask() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 768);
   const [isRecording, setIsRecording] = useState(false);
+  const [songsData, setSongsData] = useState({});
   const chatEndRef = useRef(null);
   const navigate = useNavigate();
 
-  // Helper to render a verse item
-  function renderVerse(r, i) {
-    if (!r) return null;
-
-    // Backend uses 'vilakkam', frontend used 'vilakam' - support both
-    const tamilVilakkam = r.vilakkam || r.vilakam || "";
-    const englishVilakkam = r.vilakkam_en || r.vilakam_en || "";
-    const payiramName = r.payiram || r.payiramName || "Unknown Payiram";
-    const songNum = r.song_number || r.song_no || "";
-
-    return (
-      <div key={i} style={{ marginBottom: "12px" }}>
-        <Link
-          to={`/songs/${encodeURIComponent(payiramName)}/${songNum}`}
-          style={{ color: "#2a6f9e", fontWeight: "bold", textDecoration: "underline" }}
-        >
-          <strong>{i + 1}. Song #{songNum}</strong>
-        </Link>
-        <br />
-        <span>
-          பாடல்: {(r.padal || "").slice(0, 80)}
-          {r.padal && r.padal.length > 80 ? "..." : ""}
-        </span>
-        <br />
-        <span>
-          விளக்கம்: {(tamilVilakkam || "").slice(0, 80)}
-          {tamilVilakkam && tamilVilakkam.length > 80 ? "..." : ""}
-        </span>
-        <br />
-        <span>
-          Meaning (English): {(englishVilakkam || "").slice(0, 80)}
-          {englishVilakkam && englishVilakkam.length > 80 ? "..." : ""}
-        </span>
-        <br />
-        <Link
-          to={`/songs/${encodeURIComponent(payiramName)}/${songNum}`}
-          style={{ color: "#2a6f9e", fontWeight: "600" }}
-        >
-          Go to Song
-        </Link>
-      </div>
-    );
-  }
+  // Load songs data once on mount
+  useEffect(() => {
+    const fetchSongs = async () => {
+      try {
+        const response = await fetch("/merged_with_fourth_new_line.json");
+        if (!response.ok) throw new Error("Fetch failed");
+        const data = await response.json();
+        setSongsData(data);
+      } catch {
+        try {
+          const fallback = await fetch("/songs.json");
+          if (!fallback.ok) throw new Error("Fallback fetch failed");
+          const fallbackData = await fallback.json();
+          setSongsData(fallbackData);
+        } catch (err) {
+          console.warn("Could not load songs data for Ask fallback:", err);
+        }
+      }
+    };
+    fetchSongs();
+  }, []);
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -79,13 +58,9 @@ function Ask() {
       return;
     }
 
-    // Scroll to top on mount
     window.scrollTo(0, 0);
-
-    // Load conversations on mount
     loadConversations();
 
-    // Load last active session from localStorage
     const lastSessionId = localStorage.getItem("lastSessionId");
     if (lastSessionId) {
       loadConversation(lastSessionId);
@@ -102,7 +77,6 @@ function Ask() {
   async function loadConversations() {
     try {
       const convs = await getConversations();
-      // Sort by most recent first
       convs.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
       setConversations(convs);
     } catch (error) {
@@ -114,19 +88,17 @@ function Ask() {
     }
   }
 
-  // Load specific conversation
+  // Load specific conversation — store raw verseData, never pre-render JSX
   async function loadConversation(sessionId) {
     try {
       const conversation = await getConversationHistory(sessionId);
-      console.log("Loaded conversation history:", conversation);
       setCurrentSessionId(sessionId);
       setConversationTitle(conversation.title || "Conversation");
 
-      // Convert backend message format to UI format, expanding metadata results
       const formattedMessages = [];
+
       conversation.messages.forEach((msg) => {
-        console.log("Processing message:", msg);
-        // Main message
+        // Main text message
         formattedMessages.push({
           sender: msg.role,
           role: msg.role,
@@ -136,7 +108,7 @@ function Ask() {
           isHtml: false,
         });
 
-        // Add verses from metadata if they exist
+        // Parse metadata for verse results
         let metadata = msg.metadata;
         if (typeof metadata === "string") {
           try {
@@ -147,17 +119,17 @@ function Ask() {
         }
 
         if (metadata) {
-          // Check for common keys where verses might be stored
-          // Backend uses 'search_results' or 'results'
           const verses = metadata.search_results || metadata.results || metadata.verses || [];
           if (Array.isArray(verses) && verses.length > 0) {
-            console.log(`Found ${verses.length} verses in metadata`);
             verses.forEach((r, i) => {
+              // Store raw verseData — VerseCard in ChatMessage renders it at display time
+              // so songsData is always available for Tamil/English enrichment
               formattedMessages.push({
                 sender: msg.role,
                 role: msg.role,
-                isHtml: true,
-                text: renderVerse(r, i),
+                isHtml: false,
+                verseData: r,         // ← raw data, not rendered JSX
+                verseIndex: i,        // ← used by VerseCard for numbering
                 content: `Verse ${i + 1}: Song #${r.song_number || r.song_no || ""}`,
                 timestamp: msg.timestamp,
               });
@@ -182,7 +154,6 @@ function Ask() {
     setCurrentSessionId(null);
     setMessages([]);
     setConversationTitle("New Conversation");
-    localStorage.removeItem("lastSessionId");
     setQuery("");
   }
 
@@ -190,13 +161,9 @@ function Ask() {
   async function handleDeleteConversation(sessionId) {
     try {
       await deleteConversation(sessionId);
-
-      // If deleting current conversation, reset
       if (sessionId === currentSessionId) {
         handleNewConversation();
       }
-
-      // Reload conversation list
       await loadConversations();
     } catch (error) {
       if (error.message === "UNAUTHORIZED") {
@@ -228,26 +195,27 @@ function Ask() {
     try {
       const data = await sendMessage(userQuery, currentSessionId);
 
-      // Update session ID if this is a new conversation
+      // Update session ID for new conversations
       if (!currentSessionId && data.session_id) {
         setCurrentSessionId(data.session_id);
         setConversationTitle(data.conversation_title || "Conversation");
         localStorage.setItem("lastSessionId", data.session_id);
-        // Reload conversations to show new one
         await loadConversations();
       }
 
       // Handle out of scope response
       if (data.out_of_scope) {
-        const assistantMessage = {
-          sender: "assistant",
-          role: "assistant",
-          text: data.response || "This question is outside the scope of Thirumandiram.",
-          content: data.response || "This question is outside the scope of Thirumandiram.",
-          timestamp: new Date().toISOString(),
-          isHtml: false,
-        };
-        setMessages((msgs) => [...msgs, assistantMessage]);
+        setMessages((msgs) => [
+          ...msgs,
+          {
+            sender: "assistant",
+            role: "assistant",
+            text: data.response || "This question is outside the scope of Thirumandiram.",
+            content: data.response || "This question is outside the scope of Thirumandiram.",
+            timestamp: new Date().toISOString(),
+            isHtml: false,
+          },
+        ]);
         setIsLoading(false);
         return;
       }
@@ -255,7 +223,6 @@ function Ask() {
       // Handle in-scope response
       const botMessages = [];
 
-      // Add AI response as text
       if (data.response) {
         botMessages.push({
           sender: "assistant",
@@ -267,14 +234,15 @@ function Ask() {
         });
       }
 
-      // Add verses if available
+      // Store raw verseData — rendered by VerseCard at display time
       if (data.results && data.results.length > 0) {
         data.results.forEach((r, i) => {
           botMessages.push({
             sender: "assistant",
             role: "assistant",
-            isHtml: true,
-            text: renderVerse(r, i),
+            isHtml: false,
+            verseData: r,       // ← raw data only
+            verseIndex: i,
             content: `Verse ${i + 1}: Song #${r.song_number}`,
             timestamp: new Date().toISOString(),
           });
@@ -318,7 +286,6 @@ function Ask() {
   // Handle Microphone click
   async function handleMicClick() {
     if (isRecording) {
-      // Stop recording
       setIsRecording(false);
       setIsLoading(true);
       const audioBlob = await stopRecording();
@@ -334,7 +301,6 @@ function Ask() {
       }
       setIsLoading(false);
     } else {
-      // Start recording
       const success = await startRecording();
       if (success) {
         setIsRecording(true);
@@ -353,7 +319,6 @@ function Ask() {
 
   return (
     <div className="ask-container">
-      {/* Conversation Sidebar */}
       <ConversationSidebar
         conversations={conversations}
         currentSessionId={currentSessionId}
@@ -364,9 +329,7 @@ function Ask() {
         onClose={() => setIsSidebarOpen(false)}
       />
 
-      {/* Main Chat Area */}
       <div className="chat-area">
-        {/* Chat Header */}
         <div className="chat-header">
           <button
             className="menu-btn"
@@ -375,10 +338,9 @@ function Ask() {
             ☰
           </button>
           <h2>{conversationTitle}</h2>
-          <div style={{ width: "40px" }} /> {/* Spacer for centering */}
+          <div style={{ width: "40px" }} />
         </div>
 
-        {/* Messages Area */}
         <div className="messages-area">
           {messages.length === 0 && (
             <div className="empty-chat-state">
@@ -390,7 +352,12 @@ function Ask() {
           )}
 
           {messages.map((msg, idx) => (
-            <ChatMessage key={idx} message={msg} showTimestamp={false} />
+            <ChatMessage
+              key={idx}
+              message={msg}
+              showTimestamp={false}
+              songsData={songsData}
+            />
           ))}
 
           {isLoading && (
@@ -404,11 +371,7 @@ function Ask() {
           <div ref={chatEndRef} />
         </div>
 
-        {/* Input Area */}
-        <form className="input-area" onSubmit={(e) => {
-          e.preventDefault();
-          handleSend();
-        }}>
+        <form className="input-area" onSubmit={(e) => { e.preventDefault(); handleSend(); }}>
           <button
             type="button"
             className={`mic-btn ${isRecording ? "recording" : ""}`}
@@ -422,7 +385,8 @@ function Ask() {
               </svg>
             ) : (
               <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" /><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
+                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" />
+                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
               </svg>
             )}
           </button>
@@ -436,20 +400,14 @@ function Ask() {
           />
           <button
             type="submit"
+            className="send-btn"
             disabled={isLoading || isRecording || !query.trim()}
             aria-label="Send message"
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           >
             {isLoading ? (
               "..."
             ) : (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                width="20"
-                height="20"
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
                 <path d="M2 21l21-9L2 3v7l15 2-15 2v7z" />
               </svg>
             )}

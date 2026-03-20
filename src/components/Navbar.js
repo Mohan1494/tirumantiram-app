@@ -1,255 +1,171 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { isAuthenticated, removeToken, getUser } from '../utils/authUtils';
+import './Navbar.css';
 
 function Navbar() {
-  const [isAuth, setIsAuth] = useState(false);
-  const [user, setUser] = useState(null);
+  const [isAuth, setIsAuth]           = useState(false);
+  const [user, setUser]               = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
-  const navigate = useNavigate();
+  const [menuOpen, setMenuOpen]       = useState(false);
+  const dropdownRef = useRef(null);
+  const navigate    = useNavigate();
+  const location    = useLocation();
+
+  // Close mobile menu on route change
+  useEffect(() => { setMenuOpen(false); setShowDropdown(false); }, [location]);
 
   useEffect(() => {
-    // Check authentication status when component mounts
     const checkAuth = () => {
       const loggedIn = isAuthenticated();
       setIsAuth(loggedIn);
-      
-      if (loggedIn) {
-        const userData = getUser();
-        if (userData) {
-          setUser(userData);
-        }
-      } else {
-        setUser(null);
-      }
+      setUser(loggedIn ? getUser() : null);
     };
-
     checkAuth();
 
-    // Listen for storage changes (logout in other tabs)
-    const handleStorageChange = () => {
-      checkAuth();
-      setShowDropdown(false);
-    };
+    const handleStorageChange = () => { checkAuth(); setShowDropdown(false); };
+    const handleAuthChange    = () => checkAuth();
 
-    // Listen for custom auth state change event
-    const handleAuthChange = () => {
-      checkAuth();
-    };
-
-    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('storage',       handleStorageChange);
     window.addEventListener('authStateChange', handleAuthChange);
-    
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('storage',       handleStorageChange);
       window.removeEventListener('authStateChange', handleAuthChange);
     };
   }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handler = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [menuOpen]);
 
   const handleLogout = () => {
     removeToken();
     setIsAuth(false);
     setUser(null);
     setShowDropdown(false);
+    setMenuOpen(false);
     navigate('/');
   };
 
+  const navLinks = [
+    { to: '/',            label: 'Home' },
+    { to: '/ask',         label: 'Ask' },
+    { to: '/songs',       label: 'Songs' },
+    { to: '/song-search', label: 'Search' },
+    { to: '/about',       label: 'About' },
+  ];
+
+  const userName = user?.name || (user?.email ? user.email.split('@')[0] : 'Profile');
+
   return (
-    <nav
-      style={{
-        height: "70px",
-        padding: "0 30px",
-        background: "var(--header-bg, rgba(255,255,255,0.95))",
-        backdropFilter: "blur(10px)",
-        WebkitBackdropFilter: "blur(10px)",
-        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-        borderRadius: "0px",
-        position: "fixed",
-        top: "0",
-        left: "0",
-        right: "0",
-        margin: "0",
-        zIndex: 1000,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: "40px",
-      }}
-    >
-      {/* Left Navigation Links */}
-      <div style={{ display: "flex", gap: "40px", alignItems: "center" }}>
-        <Link to="/" style={{ color: "var(--text-color)", fontWeight: "600", textDecoration: "none" }}>
-          Home
+    <>
+      <nav className="navbar">
+        {/* Brand / logo text */}
+        <Link to="/" className="navbar-brand">
+          திருமந்திரம் AI
         </Link>
-        <Link to="/ask" style={{ color: "var(--text-color)", fontWeight: "600", textDecoration: "none" }}>
-          Ask Your Question
-        </Link>
-        <Link to="/songs" style={{ color: "var(--text-color)", fontWeight: "600", textDecoration: "none" }}>
-          Songs List
-        </Link>
-        <Link to="/about" style={{ color: "var(--text-color)", fontWeight: "600", textDecoration: "none" }}>
-          About Us
-        </Link>
-        <Link to="/song-search" style={{ color: "var(--text-color)", fontWeight: "600", textDecoration: "none" }}>
-          Song Search Page
-        </Link>
-      </div>
 
-      {/* Right Auth Section */}
-      <div style={{ marginLeft: "auto", display: "flex", gap: "20px", alignItems: "center", position: "relative" }}>
-        {isAuth ? (
-          // Logged In - Profile Dropdown
-          <div style={{ position: "relative" }}>
-            <button
-              onClick={() => setShowDropdown(!showDropdown)}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                padding: "8px 14px",
-                backgroundColor: "var(--accent-color)",
-                color: "black",
-                border: "none",
-                borderRadius: "20px",
-                fontWeight: "600",
-                cursor: "pointer",
-                transition: "all 0.3s",
-                fontSize: "0.95rem",
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.backgroundColor = "var(--accent-color)";
-                e.target.style.color = "black";
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.backgroundColor = "var(--accent-color)";
-                e.target.style.color = "black";
-              }}
+        {/* Desktop links */}
+        <div className="navbar-links">
+          {navLinks.map(({ to, label }) => (
+            <Link
+              key={to}
+              to={to}
+              className={`navbar-link${location.pathname === to ? ' active' : ''}`}
             >
-              <span style={{ fontSize: "1.2rem" }}>👤</span>
-              {user?.name || (user?.email ? user.email.split("@")[0] : "Profile")}
-              <span style={{ fontSize: "0.8rem", marginLeft: "4px" }}>▼</span>
-            </button>
+              {label}
+            </Link>
+          ))}
+        </div>
 
-            {/* Dropdown Menu */}
-            {showDropdown && (
-              <div
-                style={{
-                  position: "absolute",
-                  top: "100%",
-                  right: 0,
-                  marginTop: "8px",
-                    backgroundColor: "var(--header-bg)",
-                    border: "2px solid var(--input-border)",
-                  borderRadius: "8px",
-                  boxShadow: "0 8px 16px rgba(0, 0, 0, 0.15)",
-                  minWidth: "200px",
-                  zIndex: 2000,
-                  overflow: "hidden",
-                }}
+        {/* Desktop auth */}
+        <div className="navbar-auth" ref={dropdownRef}>
+          {isAuth ? (
+            <div className="profile-wrapper">
+              <button
+                className="profile-btn"
+                onClick={() => setShowDropdown(!showDropdown)}
+                aria-haspopup="true"
+                aria-expanded={showDropdown}
               >
-                {/* User Email Display */}
-                <div
-                  style={{
-                    padding: "12px 16px",
-                    borderBottom: "1px solid var(--input-border)",
-                    backgroundColor: "var(--input-bg)",
-                    fontSize: "0.85rem",
-                    color: "var(--text-color)",
-                  }}
-                >
-                  <strong>Logged in as</strong>
-                  <div style={{ fontSize: "0.9rem", marginTop: "4px", color: "#5A3E36" }}>
-                    {user?.email || "User"}
-                  </div>
+                <span className="profile-icon">👤</span>
+                <span className="profile-name">{userName}</span>
+                <span className="profile-caret">▾</span>
+              </button>
+              {showDropdown && (
+                <div className="dropdown-menu">
+                  <div className="dropdown-email">{user?.email || 'User'}</div>
+                  <button className="dropdown-logout" onClick={handleLogout}>
+                    🚪 Logout
+                  </button>
                 </div>
+              )}
+            </div>
+          ) : (
+            <div className="auth-links">
+              <Link to="/login"  className="auth-link">Login</Link>
+              <Link to="/signup" className="auth-link auth-link--primary">Sign Up</Link>
+            </div>
+          )}
+        </div>
 
-                {/* Logout Button */}
-                <button
-                  onClick={handleLogout}
-                  style={{
-                    width: "100%",
-                    padding: "12px 16px",
-                    backgroundColor: "transparent",
-                    color: "#c62828",
-                    border: "none",
-                    fontSize: "0.95rem",
-                    fontWeight: "600",
-                    cursor: "pointer",
-                    textAlign: "left",
-                    transition: "background-color 0.2s",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = "rgba(255,0,0,0.1)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = "transparent";
-                  }}
-                >
-                  🚪 Logout
-                </button>
-              </div>
-            )}
-          </div>
-        ) : (
-          // Not Logged In - Login/Signup Links
-          <>
+        {/* Hamburger button (mobile only) */}
+        <button
+          className={`hamburger${menuOpen ? ' open' : ''}`}
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle navigation menu"
+          aria-expanded={menuOpen}
+        >
+          <span /><span /><span />
+        </button>
+      </nav>
+
+      {/* Mobile drawer overlay */}
+      {menuOpen && <div className="mobile-overlay" onClick={() => setMenuOpen(false)} />}
+
+      {/* Mobile drawer */}
+      <div className={`mobile-drawer${menuOpen ? ' open' : ''}`}>
+        <div className="mobile-drawer-inner">
+          {navLinks.map(({ to, label }) => (
             <Link
-              to="/login"
-              style={{
-                color: "#5A3E36",
-                fontWeight: "600",
-                textDecoration: "none",
-                padding: "8px 16px",
-                borderRadius: "6px",
-                transition: "background-color 0.3s",
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.backgroundColor = "rgba(184, 133, 123, 0.2)";
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.backgroundColor = "transparent";
-              }}
+              key={to}
+              to={to}
+              className={`mobile-link${location.pathname === to ? ' active' : ''}`}
+              onClick={() => setMenuOpen(false)}
             >
-              Login
+              {label}
             </Link>
-            <Link
-              to="/signup"
-              style={{
-                color: "#5A3E36",
-                fontWeight: "600",
-                textDecoration: "none",
-                padding: "8px 16px",
-                borderRadius: "6px",
-                transition: "background-color 0.3s",
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.backgroundColor = "rgba(184, 133, 123, 0.2)";
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.backgroundColor = "transparent";
-              }}
-            >
-              Sign Up
-            </Link>
-          </>
-        )}
+          ))}
+
+          <div className="mobile-drawer-divider" />
+
+          {isAuth ? (
+            <>
+              <div className="mobile-user-info">Logged in as <strong>{user?.email}</strong></div>
+              <button className="mobile-logout-btn" onClick={handleLogout}>🚪 Logout</button>
+            </>
+          ) : (
+            <div className="mobile-auth-links">
+              <Link to="/login"  className="mobile-link" onClick={() => setMenuOpen(false)}>Login</Link>
+              <Link to="/signup" className="mobile-link mobile-link--primary" onClick={() => setMenuOpen(false)}>Sign Up</Link>
+            </div>
+          )}
+        </div>
       </div>
-
-      {/* Close dropdown when clicking outside */}
-      {showDropdown && (
-        <div
-          onClick={() => setShowDropdown(false)}
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 999,
-          }}
-        />
-      )}
-    </nav>
+    </>
   );
 }
 
