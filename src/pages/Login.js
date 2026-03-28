@@ -194,35 +194,32 @@ function Login() {
             cursor: loading ? "not-allowed" : "pointer",
             transition: "background-color 0.3s",
           }}
-          onHover={(e) => {
-            if (!loading) e.target.style.backgroundColor = "var(--accent-color)";
-          }}
           onMouseEnter={(e) => {
-            if (!loading) e.target.style.backgroundColor = "#A67168";
+            if (!loading) e.target.style.backgroundColor = "var(--accent-dark)";
           }}
           onMouseLeave={(e) => {
-            if (!loading) e.target.style.backgroundColor = "#B8857B";
+            if (!loading) e.target.style.backgroundColor = "var(--accent-color)";
           }}
         >
           {loading ? "Logging in..." : "Login"}
         </button>
       </form>
 
-      <p style={{ textAlign: "center", marginTop: "20px", fontSize: "0.95rem", color: "#7A5C54" }}>
+      <p style={{ textAlign: "center", marginTop: "20px", fontSize: "0.95rem", color: "var(--text-light)" }}>
         Don't have an account?{" "}
         <Link
           to="/signup"
           style={{
-            color: "#B8857B",
+            color: "var(--accent-color)",
             textDecoration: "none",
             fontWeight: "600",
             transition: "color 0.3s",
           }}
           onMouseEnter={(e) => {
-            e.target.style.color = "#8B6459";
+            e.target.style.color = "var(--accent-dark)";
           }}
           onMouseLeave={(e) => {
-            e.target.style.color = "#B8857B";
+            e.target.style.color = "var(--accent-color)";
           }}
         >
           Sign up here

@@ -31,10 +31,10 @@ const keyStyle = {
   fontSize: "18px",
   cursor: "pointer",
   borderRadius: "6px",
-  border: "1px solid var(--accent)",
-  backgroundColor: "rgba(217, 162, 153, 0.15)",
+  border: "1px solid var(--border)",
+  backgroundColor: "rgba(90, 103, 216, 0.05)",
   margin: "3px",
-  color: "var(--text)",
+  color: "var(--accent)",
   fontWeight: "600",
   userSelect: "none",
 };
@@ -146,7 +146,7 @@ function SongSearch() {
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
-        backgroundColor: "rgba(250, 247, 243, 0.85)",
+        backgroundColor: "var(--bg-warm)",
       }}
     >
       <header
@@ -168,7 +168,7 @@ function SongSearch() {
             maxWidth: "100%",
             objectFit: "contain",
             marginBottom: "10px",
-            filter: "drop-shadow(1px 1px 2px rgba(90,62,54,0.3))",
+            filter: "drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.1))",
           }}
         />
         <h1 style={{ fontSize: "2.5rem", fontWeight: "700" }}>திருமந்திரம் தேடல்</h1>
@@ -202,8 +202,8 @@ function SongSearch() {
             border: "2px solid var(--accent)",
             outline: "none",
             color: "var(--text)",
-            backgroundColor: "rgba(255,255,255,0.9)",
-            boxShadow: "0 2px 6px rgba(90, 62, 54, 0.1)",
+            backgroundColor: "var(--bg-mid)",
+            boxShadow: "var(--shadow-sm)",
             transition: "border-color 0.3s ease",
           }}
         />
@@ -215,13 +215,13 @@ function SongSearch() {
             backgroundColor: "var(--accent)",
             border: "none",
             borderRadius: "12px",
-            color: "var(--text)",
+            color: "#ffffff",
             fontWeight: "600",
             cursor: "pointer",
-            boxShadow: "0 2px 8px rgba(217, 162, 153, 0.6)",
+            boxShadow: "0 2px 8px rgba(90, 103, 216, 0.3)",
             transition: "background-color 0.3s ease",
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#C28B73")}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--accent-dark)")}
           onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--accent)")}
         >
           தேடு
@@ -233,10 +233,10 @@ function SongSearch() {
           style={{
             maxWidth: "600px",
             margin: "0 auto 1rem auto",
-            backgroundColor: "#fff",
-            border: "1px solid var(--accent)",
+            backgroundColor: "var(--bg-mid)",
+            border: "1px solid var(--border)",
             borderRadius: "12px",
-            boxShadow: "0 4px 14px rgba(217, 162, 153, 0.25)",
+            boxShadow: "var(--shadow-md)",
             zIndex: 10,
           }}
         >
@@ -251,13 +251,13 @@ function SongSearch() {
               style={{
                 padding: "10px 15px",
                 cursor: "pointer",
-                borderBottom: i !== suggestions.length - 1 ? "1px solid #f0d9cc" : "none",
+                borderBottom: i !== suggestions.length - 1 ? "1px solid var(--border)" : "none",
                 color: "var(--text)",
                 fontWeight: "600",
                 userSelect: "none",
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#F4E8E2")}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "white")}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--bg-warm)")}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
             >
               {s}
             </div>
@@ -268,8 +268,8 @@ function SongSearch() {
       {showKeyboard && (
         <div
           style={{
-            backgroundColor: "rgba(217, 162, 153, 0.15)",
-            border: "2px solid var(--accent)",
+            backgroundColor: "var(--bg-mid)",
+            border: "1px solid var(--border)",
             borderRadius: "15px",
             padding: "12px",
             marginBottom: "1.5rem",
@@ -277,10 +277,10 @@ function SongSearch() {
             marginLeft: "auto",
             marginRight: "auto",
             userSelect: "none",
-            boxShadow: "0 4px 15px rgba(217, 162, 153, 0.3)",
+            boxShadow: "var(--shadow-sm)",
           }}
         >
-          <strong style={{ color: "var(--text)", fontWeight: "700" }}>மெய் எழுத்துகள்</strong>
+          <strong style={{ color: "var(--accent)", fontWeight: "700" }}>மெய் எழுத்துகள்</strong>
           <div style={{ display: "flex", flexWrap: "wrap", marginBottom: "10px" }}>
             {meiList.map((mei, idx) => (
               <button
@@ -295,7 +295,7 @@ function SongSearch() {
               </button>
             ))}
           </div>
-          <strong style={{ color: "var(--text)", fontWeight: "700" }}>உயிர் எழுத்துகள்</strong>
+          <strong style={{ color: "var(--accent)", fontWeight: "700" }}>உயிர் எழுத்துகள்</strong>
           <div style={{ display: "flex", flexWrap: "wrap" }}>
             {uyirList.map((uyir, idx) => (
               <button
@@ -323,7 +323,7 @@ function SongSearch() {
         <div style={{ maxWidth: "700px", margin: "0 auto" }}>
           <h3 style={{ color: "var(--text)", marginBottom: "0.5rem" }}>பாடலில் உள்ளவை</h3>
           {filteredByPadal.length === 0 && (
-            <p style={{ color: "#8B6A58" }}>பொருத்தமான பாடல் எதுவும் கிடைக்கவில்லை</p>
+            <p style={{ color: "var(--text-light)" }}>பொருத்தமான பாடல் எதுவும் கிடைக்கவில்லை</p>
           )}
           {filteredByPadal.map(({ song, index }) => (
             <div key={index} style={{ marginBottom: "1rem" }}>
@@ -333,12 +333,12 @@ function SongSearch() {
                   display: "inline-block",
                   margin: "5px 10px",
                   padding: "10px 20px",
-                  border: "2px solid var(--text)",
+                  border: "1px solid var(--accent)",
                   borderRadius: "50px",
-                  background: "rgba(90, 62, 54, 0.1)",
+                  background: "rgba(90, 103, 216, 0.05)",
                   cursor: "pointer",
                   fontWeight: "600",
-                  color: "var(--text)",
+                  color: "var(--accent)",
                   userSelect: "none",
                 }}
               >
@@ -349,10 +349,10 @@ function SongSearch() {
                 <div
                   style={{
                     margin: "10px 20px",
-                    background: "rgba(250, 247, 243, 0.9)",
+                    background: "var(--bg-mid)",
                     borderRadius: "10px",
                     padding: "15px",
-                    boxShadow: "0 4px 14px rgba(90, 62, 54, 0.15)",
+                    boxShadow: "var(--shadow-sm)",
                     color: "var(--text)",
                   }}
                 >
@@ -367,7 +367,7 @@ function SongSearch() {
                         borderRadius: "8px",
                         border: "1.5px solid var(--accent)",
                         background: activeLanguages[index] === "ta" ? "var(--accent)" : "transparent",
-                        color: "var(--text)",
+                        color: activeLanguages[index] === "ta" ? "#ffffff" : "var(--text)",
                         cursor: "pointer",
                         fontWeight: "600",
                       }}
@@ -381,7 +381,7 @@ function SongSearch() {
                         borderRadius: "8px",
                         border: "1.5px solid var(--accent)",
                         background: activeLanguages[index] === "en" ? "var(--accent)" : "transparent",
-                        color: "var(--text)",
+                        color: activeLanguages[index] === "en" ? "#ffffff" : "var(--text)",
                         cursor: "pointer",
                         fontWeight: "600",
                       }}
@@ -393,7 +393,7 @@ function SongSearch() {
                   {activeLanguages[index] === "ta" && (
                     <p
                       style={{
-                        backgroundColor: "rgba(255, 248, 225, 0.85)",
+                        backgroundColor: "rgba(90, 103, 216, 0.05)",
                         padding: "10px",
                         whiteSpace: "pre-line",
                         borderRadius: "8px",
@@ -410,7 +410,7 @@ function SongSearch() {
                   {activeLanguages[index] === "en" && (
                     <p
                       style={{
-                        backgroundColor: "rgba(225, 245, 254, 0.85)",
+                        backgroundColor: "rgba(90, 103, 216, 0.05)",
                         padding: "10px",
                         whiteSpace: "pre-line",
                         borderRadius: "8px",
@@ -430,7 +430,7 @@ function SongSearch() {
 
           <h3 style={{ color: "var(--text)", marginTop: "2rem", marginBottom: "0.5rem" }}>விளக்கத்தில் உள்ளவை</h3>
           {filteredByVilakkam.length === 0 && (
-            <p style={{ color: "#8B6A58" }}>பொருத்தமான விளக்கம் எதுவும் கிடைக்கவில்லை</p>
+            <p style={{ color: "var(--text-light)" }}>பொருத்தமான விளக்கம் எதுவும் கிடைக்கவில்லை</p>
           )}
           {filteredByVilakkam.map(({ song, index }) => (
             <div key={index} style={{ marginBottom: "1rem" }}>
@@ -440,12 +440,12 @@ function SongSearch() {
                   display: "inline-block",
                   margin: "5px 10px",
                   padding: "10px 20px",
-                  border: "2px solid #D87F33",
+                  border: "1px solid var(--accent)",
                   borderRadius: "50px",
-                  background: "rgba(216, 127, 51, 0.15)",
+                  background: "rgba(90, 103, 216, 0.05)",
                   cursor: "pointer",
                   fontWeight: "600",
-                  color: "#D87F33",
+                  color: "var(--accent)",
                   userSelect: "none",
                 }}
               >
@@ -456,10 +456,10 @@ function SongSearch() {
                 <div
                   style={{
                     margin: "10px 20px",
-                    background: "rgba(250, 247, 243, 0.9)",
+                    background: "var(--bg-mid)",
                     borderRadius: "10px",
                     padding: "15px",
-                    boxShadow: "0 4px 14px rgba(216, 127, 51, 0.15)",
+                    boxShadow: "var(--shadow-sm)",
                     color: "var(--text)",
                   }}
                 >
@@ -472,9 +472,9 @@ function SongSearch() {
                         marginRight: "10px",
                         padding: "6px 12px",
                         borderRadius: "8px",
-                        border: "1.5px solid #D87F33",
-                        background: activeLanguages[index + 1000] === "ta" ? "#D87F33" : "transparent",
-                        color: "var(--text)",
+                        border: "1.5px solid var(--accent)",
+                        background: activeLanguages[index + 1000] === "ta" ? "var(--accent)" : "transparent",
+                        color: activeLanguages[index + 1000] === "ta" ? "#ffffff" : "var(--text)",
                         cursor: "pointer",
                         fontWeight: "600",
                       }}
@@ -486,9 +486,9 @@ function SongSearch() {
                       style={{
                         padding: "6px 12px",
                         borderRadius: "8px",
-                        border: "1.5px solid #D87F33",
-                        background: activeLanguages[index + 1000] === "en" ? "#D87F33" : "transparent",
-                        color: "var(--text)",
+                        border: "1.5px solid var(--accent)",
+                        background: activeLanguages[index + 1000] === "en" ? "var(--accent)" : "transparent",
+                        color: activeLanguages[index + 1000] === "en" ? "#ffffff" : "var(--text)",
                         cursor: "pointer",
                         fontWeight: "600",
                       }}
@@ -500,7 +500,7 @@ function SongSearch() {
                   {activeLanguages[index + 1000] === "ta" && (
                     <p
                       style={{
-                        backgroundColor: "rgba(255, 248, 225, 0.85)",
+                        backgroundColor: "rgba(90, 103, 216, 0.05)",
                         padding: "10px",
                         whiteSpace: "pre-line",
                         borderRadius: "8px",
@@ -517,7 +517,7 @@ function SongSearch() {
                   {activeLanguages[index + 1000] === "en" && (
                     <p
                       style={{
-                        backgroundColor: "rgba(225, 245, 254, 0.85)",
+                        backgroundColor: "rgba(90, 103, 216, 0.05)",
                         padding: "10px",
                         whiteSpace: "pre-line",
                         borderRadius: "8px",

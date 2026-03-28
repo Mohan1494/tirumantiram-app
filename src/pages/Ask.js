@@ -371,48 +371,50 @@ function Ask() {
           <div ref={chatEndRef} />
         </div>
 
-        <form className="input-area" onSubmit={(e) => { e.preventDefault(); handleSend(); }}>
-          <button
-            type="button"
-            className={`mic-btn ${isRecording ? "recording" : ""}`}
-            onClick={handleMicClick}
-            disabled={isLoading}
-            title={isRecording ? "Stop Recording" : "Start Voice Input"}
-          >
-            {isRecording ? (
-              <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                <path d="M6 6h12v12H6z" />
-              </svg>
-            ) : (
-              <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" />
-                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
-              </svg>
-            )}
-          </button>
-          <textarea
-            rows={1}
-            value={query}
-            placeholder={isRecording ? "Listening..." : "Type your question here..."}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={handleKeyDown}
-            disabled={isLoading || isRecording}
-          />
-          <button
-            type="submit"
-            className="send-btn"
-            disabled={isLoading || isRecording || !query.trim()}
-            aria-label="Send message"
-          >
-            {isLoading ? (
-              "..."
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-                <path d="M2 21l21-9L2 3v7l15 2-15 2v7z" />
-              </svg>
-            )}
-          </button>
-        </form>
+        <div className="input-container">
+          <form className="input-area" onSubmit={(e) => { e.preventDefault(); handleSend(); }}>
+            <button
+              type="button"
+              className={`mic-btn ${isRecording ? "recording" : ""}`}
+              onClick={handleMicClick}
+              disabled={isLoading}
+              title={isRecording ? "Stop Recording" : "Start Voice Input"}
+            >
+              {isRecording ? (
+                <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                  <path d="M6 6h12v12H6z" />
+                </svg>
+              ) : (
+                <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                  <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" />
+                  <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
+                </svg>
+              )}
+            </button>
+            <textarea
+              rows={1}
+              value={query}
+              placeholder={isRecording ? "Listening..." : "Type your question here..."}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
+              disabled={isLoading || isRecording}
+            />
+            <button
+              type="submit"
+              className="send-btn"
+              disabled={isLoading || isRecording || !query.trim()}
+              aria-label="Send message"
+            >
+              {isLoading ? (
+                "..."
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                  <path d="M2 21l21-9L2 3v7l15 2-15 2v7z" />
+                </svg>
+              )}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

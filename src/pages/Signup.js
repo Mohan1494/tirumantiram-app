@@ -178,7 +178,7 @@ function Signup() {
             }}
           />
 
-          <p style={{ fontSize: "0.85rem", color: "#9A7A72", marginTop: "4px" }}>
+          <p style={{ fontSize: "0.85rem", color: "var(--text-light)", marginTop: "4px" }}>
             At least 6 characters
           </p>
         </div>
@@ -239,7 +239,7 @@ function Signup() {
             transition: "background-color 0.3s",
           }}
           onMouseEnter={(e) => {
-            if (!loading) e.target.style.backgroundColor = "var(--accent-color)";
+            if (!loading) e.target.style.backgroundColor = "var(--accent-dark)";
           }}
           onMouseLeave={(e) => {
             if (!loading) e.target.style.backgroundColor = "var(--accent-color)";
@@ -260,7 +260,7 @@ function Signup() {
             transition: "color 0.3s",
           }}
           onMouseEnter={(e) => {
-            e.target.style.color = "var(--accent-color)";
+            e.target.style.color = "var(--accent-dark)";
           }}
           onMouseLeave={(e) => {
             e.target.style.color = "var(--accent-color)";
