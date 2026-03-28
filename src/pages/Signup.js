@@ -126,7 +126,7 @@ function Signup() {
               fontSize: "1rem",
               fontFamily: "inherit",
               boxSizing: "border-box",
-              backgroundColor: "#ffffff",
+              backgroundColor: "var(--input-bg)",
               color: "var(--text-color)",
               transition: "border-color 0.3s",
             }}
@@ -165,7 +165,7 @@ function Signup() {
               fontSize: "1rem",
               fontFamily: "inherit",
               boxSizing: "border-box",
-              backgroundColor: "#ffffff",
+              backgroundColor: "var(--input-bg)",
               color: "var(--text-color)",
               transition: "border-color 0.3s",
             }}
@@ -208,7 +208,7 @@ function Signup() {
               fontSize: "1rem",
               fontFamily: "inherit",
               boxSizing: "border-box",
-              backgroundColor: "#ffffff",
+              backgroundColor: "var(--input-bg)",
               color: "var(--text-color)",
               transition: "border-color 0.3s",
             }}

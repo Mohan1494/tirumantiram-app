@@ -7,11 +7,11 @@ function About() {
         maxWidth: "800px",
         margin: "60px auto",
         padding: "30px 40px",
-        backgroundColor: "rgba(250, 247, 243, 0.85)", // translucent warm white
+        backgroundColor: "var(--bg-mid)",
         borderRadius: "20px",
-        boxShadow: "0 10px 30px rgba(90, 62, 54, 0.15)",
-        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-        color: "#5A3E36", // warm dark brown
+        boxShadow: "var(--shadow-md)",
+        fontFamily: "inherit",
+        color: "var(--text)",
         lineHeight: 1.7,
       }}
     >
@@ -21,7 +21,7 @@ function About() {
           marginBottom: "25px",
           fontWeight: "700",
           textAlign: "center",
-          borderBottom: "3px solid #D9A299",
+          borderBottom: "3px solid var(--accent)",
           paddingBottom: "10px",
         }}
       >
@@ -52,9 +52,9 @@ function About() {
         style={{
           fontSize: "1.8rem",
           marginBottom: "15px",
-          borderBottom: "2px solid #D9A299",
+          borderBottom: "2px solid var(--accent)",
           paddingBottom: "6px",
-          color: "#8B6A58",
+          color: "var(--text)",
         }}
       >
         Features
@@ -64,7 +64,7 @@ function About() {
           fontSize: "1.15rem",
           paddingLeft: "20px",
           marginBottom: "35px",
-          color: "#6D4B3B",
+          color: "var(--text)",
         }}
       >
         <li style={{ marginBottom: "10px" }}>Search verses by asking natural questions.</li>
@@ -76,14 +76,14 @@ function About() {
         style={{
           fontSize: "1.8rem",
           marginBottom: "15px",
-          borderBottom: "2px solid #D9A299",
+          borderBottom: "2px solid var(--accent)",
           paddingBottom: "6px",
-          color: "#8B6A58",
+          color: "var(--text)",
         }}
       >
         Disclaimer
       </h3>
-      <p style={{ fontSize: "1.1rem", color: "#5A3E36" }}>
+      <p style={{ fontSize: "1.1rem", color: "var(--text)" }}>
         This project is for educational and spiritual purposes. The AI results
         are based on available verse data and may not replace traditional
         interpretations.

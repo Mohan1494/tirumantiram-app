@@ -54,7 +54,7 @@ function ConversationSidebar({
             <div className={`conversation-sidebar ${isOpen ? "sidebar-open" : "sidebar-closed"}`}>
                 {/* Header */}
                 <div className="sidebar-header">
-                    <h2 style={{ margin: 0, fontSize: "1.2rem", color: "var(--sidebar-text)" }}>
+                    <h2 style={{ margin: 0, fontSize: "1.2rem", color: "#f8fafc" }}>
                         Conversations
                     </h2>
                     <button className="close-sidebar-btn" onClick={onClose}>

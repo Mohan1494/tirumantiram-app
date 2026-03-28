@@ -28,10 +28,10 @@ export default function SongDetail({ songsData }) {
   const vilakamEnLines = formatLines(song.vilakam_en || song.vilakkam_en || "");
 
   return (
-    <div style={{ padding: "30px", maxWidth: "1000px", margin: "0 auto", color: "#5A3E36" }}>
+    <div style={{ padding: "30px", maxWidth: "1000px", margin: "0 auto", color: "var(--text)" }}>
       <button
         onClick={() => navigate(-1)}
-        style={{ marginBottom: "20px", background: "none", border: "none", cursor: "pointer", color: "#D9A299" }}
+        style={{ marginBottom: "20px", background: "none", border: "none", cursor: "pointer", color: "var(--accent)" }}
       >
         ← Back
       </button>

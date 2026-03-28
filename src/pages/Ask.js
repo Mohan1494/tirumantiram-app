@@ -345,7 +345,7 @@ function Ask() {
           {messages.length === 0 && (
             <div className="empty-chat-state">
               <p>Ask a question about Thirumandiram...</p>
-              <p style={{ fontSize: "0.9rem", color: "#8B7355", marginTop: "10px" }}>
+              <p style={{ fontSize: "0.95rem", color: "#94a3b8", marginTop: "12px" }}>
                 You can ask in Tamil or English
               </p>
             </div>

@@ -10,7 +10,7 @@ function SongsList({ songsData }) {
       width: "100%",
       margin: "0 auto",
       padding: "28px 20px 60px",
-      color: "#5A3E36",
+      color: "var(--text)",
       boxSizing: "border-box",
     }}>
       <h2 style={{
@@ -37,17 +37,18 @@ function SongsList({ songsData }) {
                 padding: "16px 10px",
                 fontSize: "0.95rem",
                 fontWeight: "600",
-                backgroundColor: "#F0E4D3",
-                border: "2px solid #D9A299",
+                backgroundColor: "#ffffff",
+                border: "2px solid var(--accent)",
                 borderRadius: "12px",
                 cursor: "pointer",
-                color: "#5A3E36",
+                color: "var(--accent)",
                 lineHeight: "1.4",
                 wordBreak: "break-word",
                 minHeight: "56px",
+                transition: "all 0.2s ease"
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#D9A299"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#F0E4D3"; }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "var(--accent)"; e.currentTarget.style.color = "#ffffff"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#ffffff"; e.currentTarget.style.color = "var(--accent)"; }}
             >
               {payiram}
             </button>
@@ -59,7 +60,7 @@ function SongsList({ songsData }) {
             onClick={() => setSelectedPayiram(null)}
             style={{
               background: "none", border: "none", cursor: "pointer",
-              color: "#D9A299", fontSize: "1rem", fontWeight: "600",
+              color: "var(--accent)", fontSize: "1rem", fontWeight: "600",
               padding: "8px 0", marginBottom: "16px",
               minHeight: "44px", display: "flex", alignItems: "center",
             }}
@@ -69,7 +70,7 @@ function SongsList({ songsData }) {
 
           <h3 style={{
             fontSize: "clamp(1.1rem, 3vw, 1.5rem)",
-            borderBottom: "2px solid #D9A299",
+            borderBottom: "2px solid var(--accent)",
             paddingBottom: "10px",
             marginBottom: "16px",
             wordBreak: "break-word",
@@ -78,16 +79,16 @@ function SongsList({ songsData }) {
           </h3>
 
           {songsData[selectedPayiram].map((song) => (
-            <div key={song.song_number} style={{ padding: "10px 0", borderBottom: "1px solid #E8D8C3" }}>
+            <div key={song.song_number} style={{ padding: "10px 0", borderBottom: "1px solid var(--border)" }}>
               <Link
                 to={`/songs/${encodeURIComponent(selectedPayiram)}/${song.song_number}`}
                 style={{
-                  textDecoration: "none", color: "#2a6f9e",
+                  textDecoration: "none", color: "var(--accent)",
                   fontWeight: "600", fontSize: "clamp(0.88rem, 2vw, 1rem)",
                   lineHeight: "1.5", display: "block",
                 }}
               >
-                <span style={{ fontWeight: "700", marginRight: "6px", color: "#5A3E36" }}>
+                <span style={{ fontWeight: "700", marginRight: "6px", color: "var(--text)" }}>
                   {song.song_number}.
                 </span>
                 {song.padal.slice(0, 80)}{song.padal.length > 80 ? "…" : ""}

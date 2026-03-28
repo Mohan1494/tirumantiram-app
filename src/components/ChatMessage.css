@@ -1,0 +1,155 @@
+/* ChatMessage.css */
+.chat-message-row {
+  display: flex;
+  width: 100%;
+  margin-bottom: 24px;
+  font-family: 'Outfit', sans-serif;
+  animation: slideUpFadeIn 0.3s ease forwards;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.chat-message-row.user {
+  justify-content: flex-end;
+}
+
+.chat-message-row.assistant {
+  justify-content: flex-start;
+}
+
+.chat-bubble {
+  max-width: 85%;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  word-wrap: break-word;
+  white-space: pre-line;
+  position: relative;
+}
+
+.chat-message-row.user .chat-bubble {
+  background: var(--chat-user-msg);
+  color: var(--chat-user-text);
+  border-radius: 20px;
+  border-bottom-right-radius: 4px;
+  padding: 14px 20px;
+  box-shadow: 0 4px 10px rgba(90, 103, 216, 0.2);
+}
+
+.chat-message-row.assistant .chat-bubble {
+  background: var(--chat-bot-msg);
+  color: var(--chat-bot-text);
+  border-radius: 16px;
+  padding: 24px;   /* Larger padding to emulate a prominent "document" or card */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  width: 100%;
+}
+
+.chat-timestamp {
+  font-size: 0.75rem;
+  margin-top: 8px;
+  opacity: 0.7;
+}
+
+.chat-message-row.user .chat-timestamp {
+  color: rgba(255, 255, 255, 0.8);
+  text-align: right;
+}
+
+.chat-message-row.assistant .chat-timestamp {
+  color: var(--text-light);
+  text-align: left;
+}
+
+/* Verse Card Styling within Bot Bubble */
+.verse-card-container {
+  background: var(--chat-card-bg); /* #f8fafc */
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  margin-top: 12px;
+}
+
+.verse-card-header {
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.verse-card-header a {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.verse-card-header a:hover {
+  text-decoration: underline;
+}
+
+.verse-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 14px 0;
+}
+
+.verse-section {
+  margin-bottom: 14px;
+}
+
+.verse-label {
+  font-weight: 600;
+  color: var(--text-light);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.verse-label svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+
+.verse-text {
+  color: var(--text);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.verse-link-btn {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 18px;
+  background: #ebf4ff;
+  color: var(--accent);
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.verse-link-btn:hover {
+  background: var(--accent);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+@keyframes slideUpFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

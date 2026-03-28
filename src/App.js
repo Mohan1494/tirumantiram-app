@@ -51,11 +51,11 @@ function App() {
   return (
     <Router>
       <div
+        className="app-container"
         style={{
           minHeight: "100vh",
           display: "flex",
           flexDirection: "column",
-          background: `linear-gradient(to bottom, #FAF7F3, #F0E4D3, #DCC5B2, #D9A299)`,
         }}
       >
         <Navbar />

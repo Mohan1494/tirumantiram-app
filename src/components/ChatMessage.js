@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import "./ChatMessage.css";
 
 function formatRelativeTime(timestamp) {
     const now = new Date();
@@ -52,7 +53,6 @@ function VerseCard({ verseData, index, songsData = {} }) {
                 if (match) return { song: match, payiramKey: key };
             }
         }
-        // Scan all payirams as fallback
         for (const payiramKey of Object.keys(songsData)) {
             const group = songsData[payiramKey];
             if (!Array.isArray(group)) continue;
@@ -81,43 +81,43 @@ function VerseCard({ verseData, index, songsData = {} }) {
     }
 
     return (
-        <div style={{ marginBottom: "12px" }}>
-            <Link
-                to={`/songs/${encodeURIComponent(resolvedPayiram)}/${songNum}`}
-                style={{ color: "#2a6f9e", fontWeight: "bold", textDecoration: "underline" }}
-            >
-                <strong>{index + 1}. Song #{songNum}</strong>
-            </Link>
-            <br /><br />
-            <div style={{ marginBottom: "10px", paddingBottom: "10px", borderBottom: "1px solid #D9A299" }}>
-                <strong style={{ color: "#5A3E36" }}>பாடல்:</strong>
-                <br />
-                <span style={{ color: "#5A3E36", whiteSpace: "pre-wrap" }}>{songText}</span>
+        <div className="verse-card-container">
+            <div className="verse-card-header">
+                <Link to={`/songs/${encodeURIComponent(resolvedPayiram)}/${songNum}`}>
+                    {index + 1}. Song #{songNum}
+                </Link>
             </div>
-            <br />
-            <div style={{ marginBottom: "10px" }}>
-                <strong style={{ color: "#5A3E36" }}>விளக்கம் (Tamil):</strong>
-                <br />
-                <span style={{ color: "#5A3E36", whiteSpace: "pre-wrap" }}>
-                    {tamilVilakkam || "விளக்கம் கிடைக்கவில்லை"}
-                </span>
+            
+            <div className="verse-divider"></div>
+            
+            <div className="verse-section">
+                <div className="verse-label">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                    பாடல்:
+                </div>
+                <div className="verse-text">{songText}</div>
             </div>
+
+            <div className="verse-section">
+                <div className="verse-label">
+                    <svg viewBox="0 0 24 24"><path d="M21 15l-3-3v2H4v-2L1 15l3 3v-2h14v2l3-3z"/></svg>
+                    விளக்கம் (Tamil):
+                </div>
+                <div className="verse-text">{tamilVilakkam || "விளக்கம் கிடைக்கவில்லை"}</div>
+            </div>
+
             {englishVilakkam && (
-                <>
-                    <br />
-                    <div style={{ marginBottom: "10px" }}>
-                        <strong style={{ color: "#5A3E36" }}>Meaning (English):</strong>
-                        <br />
-                        <span style={{ color: "#5A3E36", whiteSpace: "pre-wrap" }}>{englishVilakkam}</span>
+                <div className="verse-section">
+                    <div className="verse-label">
+                        <svg viewBox="0 0 24 24"><path d="M12 21.05C6.91 21.05 2.8 16.94 2.8 11.85 2.8 6.76 6.91 2.65 12 2.65c5.09 0 9.2 4.11 9.2 9.2 0 5.09-4.11 9.2-9.2 9.2zM11 6v6l4.25 2.52.75-1.23-3.5-2.07V6h-1.5z"/></svg>
+                        Meaning (English):
                     </div>
-                </>
+                    <div className="verse-text">{englishVilakkam}</div>
+                </div>
             )}
-            <br />
-            <Link
-                to={`/songs/${encodeURIComponent(resolvedPayiram)}/${songNum}`}
-                style={{ color: "#2a6f9e", fontWeight: "600" }}
-            >
-                Go to Song
+            
+            <Link to={`/songs/${encodeURIComponent(resolvedPayiram)}/${songNum}`} className="verse-link-btn">
+                Read Full Song
             </Link>
         </div>
     );
@@ -130,74 +130,43 @@ function VerseCard({ verseData, index, songsData = {} }) {
 function ChatMessage({ message, showTimestamp = true, songsData = {} }) {
     const isUser = message.role === "user" || message.sender === "user";
     const timestamp = message.timestamp;
-
-    // If this message carries raw verse data, render it via VerseCard
+    
+    // Add small delay staggering to user messages could go here if managed by parent
+    
     if (message.verseData) {
         return (
-            <div
-                className="chat-message assistant-message"
-                style={{
-                    maxWidth: "80%",
-                    marginBottom: "15px",
-                    padding: "12px 18px",
-                    borderRadius: "20px",
-                    backgroundColor: "#F0E4D3",
-                    color: "#5A3E36",
-                    alignSelf: "flex-start",
-                    boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-                    fontSize: "1rem",
-                }}
-            >
-                <VerseCard
-                    verseData={message.verseData}
-                    index={message.verseIndex ?? 0}
-                    songsData={songsData}
-                />
-                {showTimestamp && timestamp && (
-                    <div style={{ fontSize: "0.75rem", color: "#8B7355", marginTop: "6px", opacity: 0.7 }}>
-                        {formatRelativeTime(timestamp)}
-                    </div>
-                )}
+            <div className="chat-message-row assistant">
+                <div className="chat-bubble">
+                    <VerseCard
+                        verseData={message.verseData}
+                        index={message.verseIndex ?? 0}
+                        songsData={songsData}
+                    />
+                    {showTimestamp && timestamp && (
+                        <div className="chat-timestamp">
+                            {formatRelativeTime(timestamp)}
+                        </div>
+                    )}
+                </div>
             </div>
         );
     }
 
-    // Regular text message
     const content = message.text || message.content;
     return (
-        <div
-            className={`chat-message ${isUser ? "user-message" : "assistant-message"}`}
-            style={{
-                maxWidth: "80%",
-                marginBottom: "15px",
-                padding: "12px 18px",
-                borderRadius: "20px",
-                whiteSpace: "pre-line",
-                backgroundColor: isUser ? "#D9A299" : "#F0E4D3",
-                color: "#5A3E36",
-                alignSelf: isUser ? "flex-end" : "flex-start",
-                boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-                fontSize: "1rem",
-            }}
-        >
-            {message.isHtml ? (
-                <div>{content}</div>
-            ) : (
-                <div style={{ wordWrap: "break-word" }}>{content}</div>
-            )}
-            {showTimestamp && timestamp && (
-                <div
-                    style={{
-                        fontSize: "0.75rem",
-                        color: "#8B7355",
-                        marginTop: "6px",
-                        textAlign: isUser ? "right" : "left",
-                        opacity: 0.7,
-                    }}
-                >
-                    {formatRelativeTime(timestamp)}
-                </div>
-            )}
+        <div className={`chat-message-row ${isUser ? "user" : "assistant"}`}>
+            <div className="chat-bubble">
+                {message.isHtml ? (
+                    <div dangerouslySetInnerHTML={{ __html: content }} />
+                ) : (
+                    <div>{content}</div>
+                )}
+                {showTimestamp && timestamp && (
+                    <div className="chat-timestamp">
+                        {formatRelativeTime(timestamp)}
+                    </div>
+                )}
+            </div>
         </div>
     );
 }

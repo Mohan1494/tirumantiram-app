@@ -31,10 +31,10 @@ const keyStyle = {
   fontSize: "18px",
   cursor: "pointer",
   borderRadius: "6px",
-  border: "1px solid #D9A299",
+  border: "1px solid var(--accent)",
   backgroundColor: "rgba(217, 162, 153, 0.15)",
   margin: "3px",
-  color: "#5A3E36",
+  color: "var(--text)",
   fontWeight: "600",
   userSelect: "none",
 };
@@ -112,7 +112,7 @@ function SongSearch() {
         style={{
           backgroundColor: "#FFD54F", // softer yellow highlight
           fontWeight: "700",
-          color: "#5A3E36",
+          color: "var(--text)",
         }}
       >
         {part}
@@ -156,8 +156,8 @@ function SongSearch() {
           alignItems: "center",
           padding: "20px",
           marginBottom: "1.5rem",
-          borderBottom: "2px solid #D9A299",
-          color: "#5A3E36",
+          borderBottom: "2px solid var(--accent)",
+          color: "var(--text)",
         }}
       >
         <img
@@ -199,9 +199,9 @@ function SongSearch() {
             padding: "12px",
             fontSize: "16px",
             borderRadius: "12px",
-            border: "2px solid #D9A299",
+            border: "2px solid var(--accent)",
             outline: "none",
-            color: "#5A3E36",
+            color: "var(--text)",
             backgroundColor: "rgba(255,255,255,0.9)",
             boxShadow: "0 2px 6px rgba(90, 62, 54, 0.1)",
             transition: "border-color 0.3s ease",
@@ -212,17 +212,17 @@ function SongSearch() {
           style={{
             padding: "12px 20px",
             fontSize: "16px",
-            backgroundColor: "#D9A299",
+            backgroundColor: "var(--accent)",
             border: "none",
             borderRadius: "12px",
-            color: "#5A3E36",
+            color: "var(--text)",
             fontWeight: "600",
             cursor: "pointer",
             boxShadow: "0 2px 8px rgba(217, 162, 153, 0.6)",
             transition: "background-color 0.3s ease",
           }}
           onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#C28B73")}
-          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#D9A299")}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--accent)")}
         >
           தேடு
         </button>
@@ -234,7 +234,7 @@ function SongSearch() {
             maxWidth: "600px",
             margin: "0 auto 1rem auto",
             backgroundColor: "#fff",
-            border: "1px solid #D9A299",
+            border: "1px solid var(--accent)",
             borderRadius: "12px",
             boxShadow: "0 4px 14px rgba(217, 162, 153, 0.25)",
             zIndex: 10,
@@ -252,7 +252,7 @@ function SongSearch() {
                 padding: "10px 15px",
                 cursor: "pointer",
                 borderBottom: i !== suggestions.length - 1 ? "1px solid #f0d9cc" : "none",
-                color: "#5A3E36",
+                color: "var(--text)",
                 fontWeight: "600",
                 userSelect: "none",
               }}
@@ -269,7 +269,7 @@ function SongSearch() {
         <div
           style={{
             backgroundColor: "rgba(217, 162, 153, 0.15)",
-            border: "2px solid #D9A299",
+            border: "2px solid var(--accent)",
             borderRadius: "15px",
             padding: "12px",
             marginBottom: "1.5rem",
@@ -280,7 +280,7 @@ function SongSearch() {
             boxShadow: "0 4px 15px rgba(217, 162, 153, 0.3)",
           }}
         >
-          <strong style={{ color: "#5A3E36", fontWeight: "700" }}>மெய் எழுத்துகள்</strong>
+          <strong style={{ color: "var(--text)", fontWeight: "700" }}>மெய் எழுத்துகள்</strong>
           <div style={{ display: "flex", flexWrap: "wrap", marginBottom: "10px" }}>
             {meiList.map((mei, idx) => (
               <button
@@ -295,7 +295,7 @@ function SongSearch() {
               </button>
             ))}
           </div>
-          <strong style={{ color: "#5A3E36", fontWeight: "700" }}>உயிர் எழுத்துகள்</strong>
+          <strong style={{ color: "var(--text)", fontWeight: "700" }}>உயிர் எழுத்துகள்</strong>
           <div style={{ display: "flex", flexWrap: "wrap" }}>
             {uyirList.map((uyir, idx) => (
               <button
@@ -321,7 +321,7 @@ function SongSearch() {
 
       {searchText !== "" && (
         <div style={{ maxWidth: "700px", margin: "0 auto" }}>
-          <h3 style={{ color: "#5A3E36", marginBottom: "0.5rem" }}>பாடலில் உள்ளவை</h3>
+          <h3 style={{ color: "var(--text)", marginBottom: "0.5rem" }}>பாடலில் உள்ளவை</h3>
           {filteredByPadal.length === 0 && (
             <p style={{ color: "#8B6A58" }}>பொருத்தமான பாடல் எதுவும் கிடைக்கவில்லை</p>
           )}
@@ -333,12 +333,12 @@ function SongSearch() {
                   display: "inline-block",
                   margin: "5px 10px",
                   padding: "10px 20px",
-                  border: "2px solid #5A3E36",
+                  border: "2px solid var(--text)",
                   borderRadius: "50px",
                   background: "rgba(90, 62, 54, 0.1)",
                   cursor: "pointer",
                   fontWeight: "600",
-                  color: "#5A3E36",
+                  color: "var(--text)",
                   userSelect: "none",
                 }}
               >
@@ -353,7 +353,7 @@ function SongSearch() {
                     borderRadius: "10px",
                     padding: "15px",
                     boxShadow: "0 4px 14px rgba(90, 62, 54, 0.15)",
-                    color: "#5A3E36",
+                    color: "var(--text)",
                   }}
                 >
                   <p style={{ whiteSpace: "pre-line" }}>{highlightText(song.padal, searchText)}</p>
@@ -365,9 +365,9 @@ function SongSearch() {
                         marginRight: "10px",
                         padding: "6px 12px",
                         borderRadius: "8px",
-                        border: "1.5px solid #D9A299",
-                        background: activeLanguages[index] === "ta" ? "#D9A299" : "transparent",
-                        color: "#5A3E36",
+                        border: "1.5px solid var(--accent)",
+                        background: activeLanguages[index] === "ta" ? "var(--accent)" : "transparent",
+                        color: "var(--text)",
                         cursor: "pointer",
                         fontWeight: "600",
                       }}
@@ -379,9 +379,9 @@ function SongSearch() {
                       style={{
                         padding: "6px 12px",
                         borderRadius: "8px",
-                        border: "1.5px solid #D9A299",
-                        background: activeLanguages[index] === "en" ? "#D9A299" : "transparent",
-                        color: "#5A3E36",
+                        border: "1.5px solid var(--accent)",
+                        background: activeLanguages[index] === "en" ? "var(--accent)" : "transparent",
+                        color: "var(--text)",
                         cursor: "pointer",
                         fontWeight: "600",
                       }}
@@ -398,7 +398,7 @@ function SongSearch() {
                         whiteSpace: "pre-line",
                         borderRadius: "8px",
                         marginTop: "10px",
-                        color: "#5A3E36",
+                        color: "var(--text)",
                       }}
                     >
                       <strong>விளக்கம்:</strong>
@@ -415,7 +415,7 @@ function SongSearch() {
                         whiteSpace: "pre-line",
                         borderRadius: "8px",
                         marginTop: "10px",
-                        color: "#5A3E36",
+                        color: "var(--text)",
                       }}
                     >
                       <strong>Meaning:</strong>
@@ -428,7 +428,7 @@ function SongSearch() {
             </div>
           ))}
 
-          <h3 style={{ color: "#5A3E36", marginTop: "2rem", marginBottom: "0.5rem" }}>விளக்கத்தில் உள்ளவை</h3>
+          <h3 style={{ color: "var(--text)", marginTop: "2rem", marginBottom: "0.5rem" }}>விளக்கத்தில் உள்ளவை</h3>
           {filteredByVilakkam.length === 0 && (
             <p style={{ color: "#8B6A58" }}>பொருத்தமான விளக்கம் எதுவும் கிடைக்கவில்லை</p>
           )}
@@ -460,7 +460,7 @@ function SongSearch() {
                     borderRadius: "10px",
                     padding: "15px",
                     boxShadow: "0 4px 14px rgba(216, 127, 51, 0.15)",
-                    color: "#5A3E36",
+                    color: "var(--text)",
                   }}
                 >
                   <p style={{ whiteSpace: "pre-line" }}>{highlightText(song.padal, searchText)}</p>
@@ -474,7 +474,7 @@ function SongSearch() {
                         borderRadius: "8px",
                         border: "1.5px solid #D87F33",
                         background: activeLanguages[index + 1000] === "ta" ? "#D87F33" : "transparent",
-                        color: "#5A3E36",
+                        color: "var(--text)",
                         cursor: "pointer",
                         fontWeight: "600",
                       }}
@@ -488,7 +488,7 @@ function SongSearch() {
                         borderRadius: "8px",
                         border: "1.5px solid #D87F33",
                         background: activeLanguages[index + 1000] === "en" ? "#D87F33" : "transparent",
-                        color: "#5A3E36",
+                        color: "var(--text)",
                         cursor: "pointer",
                         fontWeight: "600",
                       }}
@@ -505,7 +505,7 @@ function SongSearch() {
                         whiteSpace: "pre-line",
                         borderRadius: "8px",
                         marginTop: "10px",
-                        color: "#5A3E36",
+                        color: "var(--text)",
                       }}
                     >
                       <strong>விளக்கம்:</strong>
@@ -522,7 +522,7 @@ function SongSearch() {
                         whiteSpace: "pre-line",
                         borderRadius: "8px",
                         marginTop: "10px",
-                        color: "#5A3E36",
+                        color: "var(--text)",
                       }}
                     >
                       <strong>Meaning:</strong>

@@ -1,48 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
 /* ─── CSS Variables ─────────────────────────────────────── */
 :root {
-  --accent:        #D9A299;
-  --accent-dark:   #C98D84;
-  --accent-deeper: #A67168;
-  --text:          #5A3E36;
-  --text-light:    #8B7355;
-  --bg-warm:       #FAF7F3;
-  --bg-mid:        #F0E4D3;
-  --border:        #DCC5B2;
-  --header-bg:     rgba(255, 255, 255, 0.95);
-  --nav-height:    64px;
+  /* Simple White & Attractive Blue Theme */
+  --accent:        #5a67d8; /* Indigo Blue */
+  --accent-dark:   #4c51bf;
+  --accent-deeper: #434190; 
+  --text:          #2d3748; /* Dark Gray */
+  --text-light:    #718096; /* Slate Gray */
+  --bg-warm:       #f4f7fb; /* Light Blue/Gray for App background */
+  --bg-mid:        #ffffff; /* Main White */
+  --border:        #e2e8f0; /* Soft Border */
+  --header-bg:     #ffffff;
+  --nav-height:    70px;
   --radius-sm:     8px;
-  --radius-md:     12px;
-  --radius-lg:     20px;
-  --shadow-sm:     0 2px 8px rgba(90,62,54,0.10);
-  --shadow-md:     0 6px 20px rgba(90,62,54,0.14);
-  --shadow-lg:     0 10px 32px rgba(90,62,54,0.18);
+  --radius-md:     16px;
+  --radius-lg:     24px;
+  --shadow-sm:     0 2px 10px rgba(0, 0, 0, 0.03);
+  --shadow-md:     0 8px 24px rgba(0, 0, 0, 0.05);
+  --shadow-lg:     0 12px 40px rgba(0, 0, 0, 0.08);
 
-  /* legacy aliases used by existing components */
-  --header-bg:     rgba(255, 255, 255, 0.95);
-  --input-border:  #DCC5B2;
-  --input-bg:      #FAF7F3;
-  --text-color:    #5A3E36;
-  --accent-color:  #D9A299;
+  /* legacy aliases matching the soft theme */
+  --input-border:  #e2e8f0;
+  --input-bg:      #ffffff;
+  --text-color:    #2d3748;
+  --accent-color:  #5a67d8;
+
+  /* Chat Specific UI */
+  --chat-panel-bg: #f4f7fb;
+  --chat-panel-border: transparent;
+  --chat-user-msg: #5a67d8;
+  --chat-user-text: #ffffff;
+  --chat-bot-msg: #ffffff;
+  --chat-bot-text: #2d3748;
+  --chat-card-bg: #f8fafc;
 }
 
 /* ─── Reset / Base ──────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
 
 html, body, #root {
-  height: 100%;
+  min-height: 100vh;
   margin: 0;
   padding: 0;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
-    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
-    'Helvetica Neue', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   color: var(--text);
-  /* prevent horizontal overflow on mobile */
   overflow-x: hidden;
+  background-color: var(--bg-warm);
 }
 
 code {
