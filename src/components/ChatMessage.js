@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./ChatMessage.css";
 
@@ -25,6 +25,28 @@ function formatDisplayText(text = "") {
         .filter((line) => line && line !== ":")
         .join("\n");
 }
+
+function ExpandableText({ text, maxLength = 150 }) {
+    const [isExpanded, setIsExpanded] = useState(false);
+    
+    if (!text) return null;
+    if (text.length <= maxLength) {
+        return <>{text}</>;
+    }
+
+    return (
+        <>
+            {isExpanded ? text : `${text.substring(0, maxLength)}...`}
+            <button 
+                className="read-more-inline-btn"
+                onClick={() => setIsExpanded(!isExpanded)}
+            >
+                {isExpanded ? " Read Less" : " Read More"}
+            </button>
+        </>
+    );
+}
+
 
 /**
  * Renders a single verse card from raw verse data + songsData for fallback enrichment.
@@ -103,7 +125,9 @@ function VerseCard({ verseData, index, songsData = {} }) {
                     <svg viewBox="0 0 24 24"><path d="M21 15l-3-3v2H4v-2L1 15l3 3v-2h14v2l3-3z"/></svg>
                     விளக்கம் (Tamil):
                 </div>
-                <div className="verse-text">{tamilVilakkam || "விளக்கம் கிடைக்கவில்லை"}</div>
+                <div className="verse-text">
+                    <ExpandableText text={tamilVilakkam || "விளக்கம் கிடைக்கவில்லை"} />
+                </div>
             </div>
 
             {englishVilakkam && (
@@ -112,7 +136,9 @@ function VerseCard({ verseData, index, songsData = {} }) {
                         <svg viewBox="0 0 24 24"><path d="M12 21.05C6.91 21.05 2.8 16.94 2.8 11.85 2.8 6.76 6.91 2.65 12 2.65c5.09 0 9.2 4.11 9.2 9.2 0 5.09-4.11 9.2-9.2 9.2zM11 6v6l4.25 2.52.75-1.23-3.5-2.07V6h-1.5z"/></svg>
                         Meaning (English):
                     </div>
-                    <div className="verse-text">{englishVilakkam}</div>
+                    <div className="verse-text">
+                        <ExpandableText text={englishVilakkam} />
+                    </div>
                 </div>
             )}
             
