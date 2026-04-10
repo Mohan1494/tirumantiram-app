@@ -1,64 +1,19 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { isAuthenticated, removeToken, getUser } from '../utils/authUtils';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import './Navbar.css';
 
 function Navbar() {
-  const [isAuth, setIsAuth]           = useState(false);
-  const [user, setUser]               = useState(null);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [menuOpen, setMenuOpen]       = useState(false);
-  const dropdownRef = useRef(null);
-  const navigate    = useNavigate();
-  const location    = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
 
   // Close mobile menu on route change
-  useEffect(() => { setMenuOpen(false); setShowDropdown(false); }, [location]);
-
-  useEffect(() => {
-    const checkAuth = () => {
-      const loggedIn = isAuthenticated();
-      setIsAuth(loggedIn);
-      setUser(loggedIn ? getUser() : null);
-    };
-    checkAuth();
-
-    const handleStorageChange = () => { checkAuth(); setShowDropdown(false); };
-    const handleAuthChange    = () => checkAuth();
-
-    window.addEventListener('storage',       handleStorageChange);
-    window.addEventListener('authStateChange', handleAuthChange);
-    return () => {
-      window.removeEventListener('storage',       handleStorageChange);
-      window.removeEventListener('authStateChange', handleAuthChange);
-    };
-  }, []);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handler = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setShowDropdown(false);
-      }
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
+  useEffect(() => { setMenuOpen(false); }, [location]);
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [menuOpen]);
-
-  const handleLogout = () => {
-    removeToken();
-    setIsAuth(false);
-    setUser(null);
-    setShowDropdown(false);
-    setMenuOpen(false);
-    navigate('/');
-  };
 
   const navLinks = [
     { to: '/',            label: 'Home' },
@@ -67,8 +22,6 @@ function Navbar() {
     { to: '/song-search', label: 'Search' },
     { to: '/about',       label: 'About' },
   ];
-
-  const userName = user?.name || (user?.email ? user.email.split('@')[0] : 'Profile');
 
   return (
     <>
@@ -91,36 +44,8 @@ function Navbar() {
           ))}
         </div>
 
-        {/* Desktop auth */}
-        <div className="navbar-auth" ref={dropdownRef}>
-          {isAuth ? (
-            <div className="profile-wrapper">
-              <button
-                className="profile-btn"
-                onClick={() => setShowDropdown(!showDropdown)}
-                aria-haspopup="true"
-                aria-expanded={showDropdown}
-              >
-                <span className="profile-icon">👤</span>
-                <span className="profile-name">{userName}</span>
-                <span className="profile-caret">▾</span>
-              </button>
-              {showDropdown && (
-                <div className="dropdown-menu">
-                  <div className="dropdown-email">{user?.email || 'User'}</div>
-                  <button className="dropdown-logout" onClick={handleLogout}>
-                    🚪 Logout
-                  </button>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="auth-links">
-              <Link to="/login"  className="auth-link">Login</Link>
-              <Link to="/signup" className="auth-link auth-link--primary">Sign Up</Link>
-            </div>
-          )}
-        </div>
+        {/* Removed auth section for demo mode */}
+        <div className="navbar-auth" />
 
         {/* Hamburger button (mobile only) */}
         <button
@@ -149,20 +74,6 @@ function Navbar() {
               {label}
             </Link>
           ))}
-
-          <div className="mobile-drawer-divider" />
-
-          {isAuth ? (
-            <>
-              <div className="mobile-user-info">Logged in as <strong>{user?.email}</strong></div>
-              <button className="mobile-logout-btn" onClick={handleLogout}>🚪 Logout</button>
-            </>
-          ) : (
-            <div className="mobile-auth-links">
-              <Link to="/login"  className="mobile-link" onClick={() => setMenuOpen(false)}>Login</Link>
-              <Link to="/signup" className="mobile-link mobile-link--primary" onClick={() => setMenuOpen(false)}>Sign Up</Link>
-            </div>
-          )}
         </div>
       </div>
     </>

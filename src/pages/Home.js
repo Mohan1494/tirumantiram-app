@@ -12,7 +12,7 @@ function Home() {
         <p className="home-subtitle">
           Explore the wisdom of Thirumandiram in Tamil &amp; English.
         </p>
-        <Link to="/login" className="home-cta">
+        <Link to="/ask" className="home-cta">
           Get Started →
         </Link>
       </div>

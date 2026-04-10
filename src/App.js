@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import ProtectedRoute from "./components/ProtectedRoute";
 import Home from "./pages/Home";
 import Ask from "./pages/Ask";
 import SongsList from "./pages/SongsList";
 import About from "./pages/About";
 import SongDetail from "./pages/SongDetail";
 import SongSearch from "./pages/SongSearch";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
 import Footer from "./components/Footer";
 
 function App() {
@@ -44,9 +41,8 @@ function App() {
     loadSongs();
   }, []);
 
-  if (Object.keys(songsData).length === 0) {
-    return <p style={{ textAlign: "center", marginTop: "50px" }}>Loading songs...</p>;
-  }
+  // ✅ REMOVED the loading gate that was causing remount/blank on navigation.
+  // songsData is passed down and Ask/SongDetail will just render with {} until ready.
 
   return (
     <Router>
@@ -60,25 +56,16 @@ function App() {
       >
         <Navbar />
 
-        {/* MAIN CONTENT — block layout so margin:auto centering works on children */}
         <div style={{
           flex: 1,
-          marginTop: "64px",   /* matches --nav-height */
-          display: "block",    /* NOT flex — allows children to use margin:0 auto */
+          marginTop: "64px",
+          display: "block",
           width: "100%",
         }}>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route
-              path="/ask"
-              element={
-                <ProtectedRoute>
-                  <Ask />
-                </ProtectedRoute>
-              }
-            />
+            {/* ✅ Pass songsData from App so Ask doesn't need to fetch it again */}
+            <Route path="/ask" element={<Ask songsData={songsData} />} />
             <Route path="/songs" element={<SongsList songsData={songsData} />} />
             <Route path="/about" element={<About />} />
             <Route

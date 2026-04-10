@@ -1,13 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { isAuthenticated } from "../utils/authUtils";
-import {
-  sendMessage,
-  getConversations,
-  getConversationHistory,
-  deleteConversation,
-} from "../services/conversationService";
-import ConversationSidebar from "../components/ConversationSidebar";
+import { sendMessage, clearSession } from "../services/conversationService";
 import ChatMessage from "../components/ChatMessage";
 import {
   startRecording,
@@ -16,162 +8,44 @@ import {
 } from "../services/sttService";
 import "./Ask.css";
 
-function Ask() {
-  const [messages, setMessages] = useState([]);
+// ✅ Accept songsData as a prop from App.js (no need to fetch it again here)
+function Ask({ songsData = {} }) {
+  const [messages, setMessages] = useState(() => {
+    // ✅ Initialize state directly from localStorage (lazy initializer)
+    // This runs once on mount and avoids the flicker from a useEffect load
+    try {
+      const saved = localStorage.getItem("tirumantiram_messages");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
   const [query, setQuery] = useState("");
-  const [currentSessionId, setCurrentSessionId] = useState(null);
-  const [conversations, setConversations] = useState([]);
-  const [conversationTitle, setConversationTitle] = useState("New Conversation");
   const [isLoading, setIsLoading] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 768);
   const [isRecording, setIsRecording] = useState(false);
-  const [songsData, setSongsData] = useState({});
   const chatEndRef = useRef(null);
-  const navigate = useNavigate();
 
-  // Load songs data once on mount
+  // ✅ Save messages to localStorage whenever they change
   useEffect(() => {
-    const fetchSongs = async () => {
-      try {
-        const response = await fetch("/merged_with_fourth_new_line.json");
-        if (!response.ok) throw new Error("Fetch failed");
-        const data = await response.json();
-        setSongsData(data);
-      } catch {
-        try {
-          const fallback = await fetch("/songs.json");
-          if (!fallback.ok) throw new Error("Fallback fetch failed");
-          const fallbackData = await fallback.json();
-          setSongsData(fallbackData);
-        } catch (err) {
-          console.warn("Could not load songs data for Ask fallback:", err);
-        }
-      }
-    };
-    fetchSongs();
-  }, []);
+    localStorage.setItem("tirumantiram_messages", JSON.stringify(messages));
+  }, [messages]);
 
-  // Redirect to login if not authenticated
+  // Scroll to top on mount
   useEffect(() => {
-    if (!isAuthenticated()) {
-      navigate("/login");
-      return;
-    }
-
     window.scrollTo(0, 0);
-    loadConversations();
-
-    const lastSessionId = localStorage.getItem("lastSessionId");
-    if (lastSessionId) {
-      loadConversation(lastSessionId);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigate]);
+  }, []);
 
   // Auto-scroll to latest message
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Load all conversations
-  async function loadConversations() {
-    try {
-      const convs = await getConversations();
-      convs.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
-      setConversations(convs);
-    } catch (error) {
-      if (error.message === "UNAUTHORIZED") {
-        navigate("/login");
-      } else {
-        console.error("Failed to load conversations:", error);
-      }
-    }
-  }
-
-  // Load specific conversation — store raw verseData, never pre-render JSX
-  async function loadConversation(sessionId) {
-    try {
-      const conversation = await getConversationHistory(sessionId);
-      setCurrentSessionId(sessionId);
-      setConversationTitle(conversation.title || "Conversation");
-
-      const formattedMessages = [];
-
-      conversation.messages.forEach((msg) => {
-        // Main text message
-        formattedMessages.push({
-          sender: msg.role,
-          role: msg.role,
-          text: msg.content,
-          content: msg.content,
-          timestamp: msg.timestamp,
-          isHtml: false,
-        });
-
-        // Parse metadata for verse results
-        let metadata = msg.metadata;
-        if (typeof metadata === "string") {
-          try {
-            metadata = JSON.parse(metadata);
-          } catch (e) {
-            console.warn("Failed to parse metadata string:", e);
-          }
-        }
-
-        if (metadata) {
-          const verses = metadata.search_results || metadata.results || metadata.verses || [];
-          if (Array.isArray(verses) && verses.length > 0) {
-            verses.forEach((r, i) => {
-              // Store raw verseData — VerseCard in ChatMessage renders it at display time
-              // so songsData is always available for Tamil/English enrichment
-              formattedMessages.push({
-                sender: msg.role,
-                role: msg.role,
-                isHtml: false,
-                verseData: r,         // ← raw data, not rendered JSX
-                verseIndex: i,        // ← used by VerseCard for numbering
-                content: `Verse ${i + 1}: Song #${r.song_number || r.song_no || ""}`,
-                timestamp: msg.timestamp,
-              });
-            });
-          }
-        }
-      });
-
-      setMessages(formattedMessages);
-      localStorage.setItem("lastSessionId", sessionId);
-    } catch (error) {
-      if (error.message === "UNAUTHORIZED") {
-        navigate("/login");
-      } else {
-        console.error("Failed to load conversation:", error);
-      }
-    }
-  }
-
   // Start new conversation
   function handleNewConversation() {
-    setCurrentSessionId(null);
     setMessages([]);
-    setConversationTitle("New Conversation");
     setQuery("");
-  }
-
-  // Delete conversation
-  async function handleDeleteConversation(sessionId) {
-    try {
-      await deleteConversation(sessionId);
-      if (sessionId === currentSessionId) {
-        handleNewConversation();
-      }
-      await loadConversations();
-    } catch (error) {
-      if (error.message === "UNAUTHORIZED") {
-        navigate("/login");
-      } else {
-        console.error("Failed to delete conversation:", error);
-      }
-    }
+    localStorage.removeItem("tirumantiram_messages");
+    clearSession();
   }
 
   // Send message
@@ -193,17 +67,8 @@ function Ask() {
     setIsLoading(true);
 
     try {
-      const data = await sendMessage(userQuery, currentSessionId);
+      const data = await sendMessage(userQuery);
 
-      // Update session ID for new conversations
-      if (!currentSessionId && data.session_id) {
-        setCurrentSessionId(data.session_id);
-        setConversationTitle(data.conversation_title || "Conversation");
-        localStorage.setItem("lastSessionId", data.session_id);
-        await loadConversations();
-      }
-
-      // Handle out of scope response
       if (data.out_of_scope) {
         setMessages((msgs) => [
           ...msgs,
@@ -220,7 +85,6 @@ function Ask() {
         return;
       }
 
-      // Handle in-scope response
       const botMessages = [];
 
       if (data.response) {
@@ -234,14 +98,13 @@ function Ask() {
         });
       }
 
-      // Store raw verseData — rendered by VerseCard at display time
       if (data.results && data.results.length > 0) {
         data.results.forEach((r, i) => {
           botMessages.push({
             sender: "assistant",
             role: "assistant",
             isHtml: false,
-            verseData: r,       // ← raw data only
+            verseData: r,
             verseIndex: i,
             content: `Verse ${i + 1}: Song #${r.song_number}`,
             timestamp: new Date().toISOString(),
@@ -263,7 +126,6 @@ function Ask() {
             isHtml: false,
           },
         ]);
-        navigate("/login");
       } else {
         console.error(error);
         setMessages((msgs) => [
@@ -319,26 +181,19 @@ function Ask() {
 
   return (
     <div className="ask-container">
-      <ConversationSidebar
-        conversations={conversations}
-        currentSessionId={currentSessionId}
-        onSelectConversation={loadConversation}
-        onNewConversation={handleNewConversation}
-        onDeleteConversation={handleDeleteConversation}
-        isOpen={isSidebarOpen}
-        onClose={() => setIsSidebarOpen(false)}
-      />
-
       <div className="chat-area">
         <div className="chat-header">
-          <button
-            className="menu-btn"
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          >
-            ☰
-          </button>
-          <h2>{conversationTitle}</h2>
-          <div style={{ width: "40px" }} />
+          <h2>Ask Thirumandiram</h2>
+          {/* ✅ New Conversation button — clears chat and session */}
+          {messages.length > 0 && (
+            <button
+              className="new-conversation-btn"
+              onClick={handleNewConversation}
+              title="Start a new conversation"
+            >
+              New Chat
+            </button>
+          )}
         </div>
 
         <div className="messages-area">

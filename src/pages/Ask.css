@@ -60,6 +60,39 @@
   background: #f8fafc; 
 }
 
+/* ─── New Conversation Button ────────────────────────────── */
+.new-conversation-btn {
+  background: transparent;
+  border: 1px solid var(--border, #e2e8f0);
+  color: var(--text-light, #94a3b8);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.new-conversation-btn::before {
+  content: "+";
+  font-size: 1rem;
+  line-height: 1;
+  font-weight: 400;
+}
+
+.new-conversation-btn:hover {
+  background: var(--accent, #5a67d8);
+  color: #ffffff;
+  border-color: var(--accent, #5a67d8);
+  box-shadow: 0 2px 8px rgba(90, 103, 216, 0.25);
+}
+
 /* ─── Messages area ──────────────────────────────────────── */
 .messages-area {
   flex: 1;
@@ -263,5 +296,22 @@
 
   .input-container {
     padding: 8px 12px max(16px, env(safe-area-inset-bottom)) 12px;
+  }
+
+  .new-conversation-btn {
+    font-size: 0.78rem;
+    padding: 5px 10px;
+  }
+
+  /* Keep h2 centered even with button on the right */
+  .chat-header h2 {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  .chat-header {
+    position: relative;
   }
 }
