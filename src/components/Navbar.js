@@ -1,15 +1,3 @@
-<<<<<<< HEAD
-import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import './Navbar.css';
-
-function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const location = useLocation();
-
-  // Close mobile menu on route change
-  useEffect(() => { setMenuOpen(false); }, [location]);
-=======
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { isAuthenticated, removeToken, getUser, isGuestMode } from '../utils/authUtils';
@@ -26,7 +14,10 @@ function Navbar() {
   const location    = useLocation();
 
   // Close mobile menu on route change
-  useEffect(() => { setMenuOpen(false); setShowDropdown(false); }, [location]);
+  useEffect(() => { 
+    setMenuOpen(false); 
+    setShowDropdown(false); 
+  }, [location]);
 
   useEffect(() => {
     const checkAuth = () => {
@@ -38,8 +29,11 @@ function Navbar() {
     };
     checkAuth();
 
-    const handleStorageChange = () => { checkAuth(); setShowDropdown(false); };
-    const handleAuthChange    = () => checkAuth();
+    const handleStorageChange = () => { 
+      checkAuth(); 
+      setShowDropdown(false); 
+    };
+    const handleAuthChange = () => checkAuth();
 
     window.addEventListener('storage',       handleStorageChange);
     window.addEventListener('authStateChange', handleAuthChange);
@@ -59,7 +53,6 @@ function Navbar() {
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, []);
->>>>>>> 39f9fce (Production ready frontend with GIS and backend URL updates)
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -67,8 +60,6 @@ function Navbar() {
     return () => { document.body.style.overflow = ''; };
   }, [menuOpen]);
 
-<<<<<<< HEAD
-=======
   const handleLogout = () => {
     removeToken();
     setIsAuth(false);
@@ -79,7 +70,6 @@ function Navbar() {
     navigate('/login');
   };
 
->>>>>>> 39f9fce (Production ready frontend with GIS and backend URL updates)
   const navLinks = [
     { to: '/',            label: 'Home' },
     { to: '/ask',         label: 'Ask' },
@@ -87,6 +77,9 @@ function Navbar() {
     { to: '/song-search', label: 'Search' },
     { to: '/about',       label: 'About' },
   ];
+
+  // Derive display name
+  const userName = user?.email ? user.email.split('@')[0] : (user?.name || 'User');
 
   return (
     <>
@@ -109,10 +102,6 @@ function Navbar() {
           ))}
         </div>
 
-<<<<<<< HEAD
-        {/* Removed auth section for demo mode */}
-        <div className="navbar-auth" />
-=======
         {/* Desktop auth */}
         <div className="navbar-auth" ref={dropdownRef}>
           {isAuth ? (
@@ -164,7 +153,6 @@ function Navbar() {
             </div>
           )}
         </div>
->>>>>>> 39f9fce (Production ready frontend with GIS and backend URL updates)
 
         {/* Hamburger button (mobile only) */}
         <button
@@ -193,8 +181,6 @@ function Navbar() {
               {label}
             </Link>
           ))}
-<<<<<<< HEAD
-=======
 
           <div className="mobile-drawer-divider" />
 
@@ -214,7 +200,6 @@ function Navbar() {
               <Link to="/signup" className="mobile-link mobile-link--primary" onClick={() => setMenuOpen(false)}>Sign Up</Link>
             </div>
           )}
->>>>>>> 39f9fce (Production ready frontend with GIS and backend URL updates)
         </div>
       </div>
     </>
