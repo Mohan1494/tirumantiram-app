@@ -7,6 +7,9 @@ import SongsList from "./pages/SongsList";
 import About from "./pages/About";
 import SongDetail from "./pages/SongDetail";
 import SongSearch from "./pages/SongSearch";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Footer from "./components/Footer";
 
 function App() {
@@ -65,7 +68,13 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             {/* ✅ Pass songsData from App so Ask doesn't need to fetch it again */}
-            <Route path="/ask" element={<Ask songsData={songsData} />} />
+            <Route path="/ask" element={
+              <ProtectedRoute>
+                <Ask songsData={songsData} />
+              </ProtectedRoute>
+            } />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
             <Route path="/songs" element={<SongsList songsData={songsData} />} />
             <Route path="/about" element={<About />} />
             <Route

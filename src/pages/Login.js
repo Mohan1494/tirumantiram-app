@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { setToken, setUser, setGuestMode, isAuthenticated } from "../utils/authUtils";
 
@@ -19,22 +19,7 @@ function Login() {
     }
   }, [navigate]);
 
-  useEffect(() => {
-    // Initialize Google Sign-In
-    if (window.google) {
-      window.google.accounts.id.initialize({
-        client_id: "250158981261-ael7se4dihijb7r11nhd9g1rqogfd3iv.apps.googleusercontent.com",
-        callback: handleCredentialResponse
-      });
-      window.google.accounts.id.renderButton(
-        document.getElementById("googleSignInDiv"),
-        { theme: "outline", size: "large", text: "continue_with", shape: "rectangular", width: 380 }
-      );
-      window.google.accounts.id.prompt(); // prompt for auto-select
-    }
-  }, []);
-
-  const handleCredentialResponse = async (response) => {
+  const handleCredentialResponse = useCallback(async (response) => {
     try {
       setLoading(true);
       const res = await fetch(`${BASE_URL}/auth/google`, {
@@ -58,7 +43,22 @@ function Login() {
       console.error(err);
       setLoading(false);
     }
-  };
+  }, [navigate]);
+
+  useEffect(() => {
+    // Initialize Google Sign-In
+    if (window.google) {
+      window.google.accounts.id.initialize({
+        client_id: "250158981261-ael7se4dihijb7r11nhd9g1rqogfd3iv.apps.googleusercontent.com",
+        callback: handleCredentialResponse
+      });
+      window.google.accounts.id.renderButton(
+        document.getElementById("googleSignInDiv"),
+        { theme: "outline", size: "large", text: "continue_with", shape: "rectangular", width: 380 }
+      );
+      window.google.accounts.id.prompt(); // prompt for auto-select
+    }
+  }, [handleCredentialResponse]);
 
 
 
