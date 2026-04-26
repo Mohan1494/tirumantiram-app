@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { isAuthenticated, setUser, setToken } from "../utils/authUtils";
 
+const BASE_URL = "https://mohan1494-tirumantiram-backend.hf.space";
+
 function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -58,7 +60,7 @@ function Signup() {
     }
   };
 
-  const BASE_URL = "https://mohan1494-tirumantiram-backend.hf.space";
+
 
   async function handleSignup(e) {
     e.preventDefault();

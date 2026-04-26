@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { setToken, setUser, setGuestMode, isAuthenticated } from "../utils/authUtils";
 
+const BASE_URL = "https://mohan1494-tirumantiram-backend.hf.space";
+
 function Login() {
   const location = useLocation();
   const [email, setEmail] = useState(location.state?.email || "");
@@ -58,7 +60,7 @@ function Login() {
     }
   };
 
-  const BASE_URL = "https://mohan1494-tirumantiram-backend.hf.space";
+
 
   async function handleLogin(e) {
     e.preventDefault();
