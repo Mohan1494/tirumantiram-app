@@ -1,4 +1,6 @@
-const BASE_URL = "https://mohan1494-tirumantiram-backend2.hf.space";
+import { getAuthHeaders, isGuestMode } from "../utils/authUtils";
+
+const BASE_URL = "https://mohan1494-tirumantiram-backend.hf.space";
 
 // Session management for maintaining conversation state
 const SESSION_KEY = "tirumantiram_session_id";
@@ -61,9 +63,102 @@ export async function sendMessage(message, topK = 3) {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            ...getAuthHeaders()
         },
         body: JSON.stringify(payload),
     });
+
+    if (response.status === 401 && !isGuestMode()) {
+        throw new Error("UNAUTHORIZED");
+    }
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+/**
+ * Get all conversations for the current user
+ * @returns {Promise<Array>} List of conversations with metadata
+ */
+export async function getConversations() {
+    const response = await fetch(`${BASE_URL}/conversations`, {
+        method: "GET",
+        headers: getAuthHeaders(),
+    });
+
+    if (response.status === 401) {
+        throw new Error("UNAUTHORIZED");
+    }
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+/**
+ * Get full conversation history for a specific session
+ * @param {string} sessionId - The session ID
+ * @returns {Promise<object>} Conversation with all messages
+ */
+export async function getConversationHistory(sessionId) {
+    const response = await fetch(`${BASE_URL}/conversations/${sessionId}`, {
+        method: "GET",
+        headers: getAuthHeaders(),
+    });
+
+    if (response.status === 401) {
+        throw new Error("UNAUTHORIZED");
+    }
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+/**
+ * Delete a conversation
+ * @param {string} sessionId - The session ID to delete
+ * @returns {Promise<object>} Deletion response
+ */
+export async function deleteConversation(sessionId) {
+    const response = await fetch(`${BASE_URL}/conversations/${sessionId}`, {
+        method: "DELETE",
+        headers: getAuthHeaders(),
+    });
+
+    if (response.status === 401) {
+        throw new Error("UNAUTHORIZED");
+    }
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+/**
+ * Explicitly create a new conversation
+ * @param {string} firstMessage - The initial message
+ * @returns {Promise<object>} New conversation response with session_id
+ */
+export async function createConversation(firstMessage) {
+    const response = await fetch(`${BASE_URL}/conversations/new`, {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ first_message: firstMessage }),
+    });
+
+    if (response.status === 401) {
+        throw new Error("UNAUTHORIZED");
+    }
 
     if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

@@ -1,5 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
-import { sendMessage, clearSession } from "../services/conversationService";
+import { useNavigate } from "react-router-dom";
+import { isAuthenticated, isGuestMode } from "../utils/authUtils";
+import {
+  sendMessage,
+  getConversations,
+  getConversationHistory,
+  deleteConversation,
+  clearSession
+} from "../services/conversationService";
+import ConversationSidebar from "../components/ConversationSidebar";
 import ChatMessage from "../components/ChatMessage";
 import {
   startRecording,
@@ -8,44 +17,105 @@ import {
 } from "../services/sttService";
 import "./Ask.css";
 
-// ✅ Accept songsData as a prop from App.js (no need to fetch it again here)
+// ✅ Accept songsData as a prop from App.js
 function Ask({ songsData = {} }) {
-  const [messages, setMessages] = useState(() => {
-    // ✅ Initialize state directly from localStorage (lazy initializer)
-    // This runs once on mount and avoids the flicker from a useEffect load
-    try {
-      const saved = localStorage.getItem("tirumantiram_messages");
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
+  const navigate = useNavigate();
+  const [messages, setMessages] = useState([]);
   const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [conversations, setConversations] = useState([]);
+  const [currentSessionId, setCurrentSessionId] = useState(null);
+  const [conversationTitle, setConversationTitle] = useState("Ask Thirumandiram");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const chatEndRef = useRef(null);
 
-  // ✅ Save messages to localStorage whenever they change
+  // Redirect to login if not authenticated and not guest
   useEffect(() => {
-    localStorage.setItem("tirumantiram_messages", JSON.stringify(messages));
-  }, [messages]);
+    if (!isAuthenticated() && !isGuestMode()) {
+      navigate("/login");
+      return;
+    }
 
-  // Scroll to top on mount
-  useEffect(() => {
+    if (isGuestMode()) {
+      setConversationTitle("Guest Session");
+    } else {
+      loadConversations();
+      const lastSessionId = localStorage.getItem("lastSessionId");
+      if (lastSessionId) {
+        loadConversation(lastSessionId);
+      }
+    }
+    
     window.scrollTo(0, 0);
-  }, []);
+  }, [navigate]);
 
   // Auto-scroll to latest message
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  async function loadConversations() {
+    try {
+      const data = await getConversations();
+      setConversations(data);
+    } catch (error) {
+      console.error("Failed to load conversations:", error);
+    }
+  }
+
+  async function loadConversation(sessionId) {
+    setIsLoading(true);
+    try {
+      const data = await getConversationHistory(sessionId);
+      setCurrentSessionId(data.session_id);
+      setConversationTitle(data.title);
+      
+      // Convert backend message format to frontend format
+      const history = data.messages.map(msg => ({
+        sender: msg.role === "user" ? "user" : "assistant",
+        role: msg.role,
+        text: msg.content,
+        content: msg.content,
+        timestamp: msg.timestamp,
+        isHtml: false,
+        verseData: msg.metadata?.search_results?.[0] // Optional: link to first result
+      }));
+      
+      setMessages(history);
+      if (!isGuestMode()) {
+        localStorage.setItem("lastSessionId", sessionId);
+      }
+      setIsSidebarOpen(false);
+    } catch (error) {
+      console.error("Failed to load conversation history:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleDeleteConversation(sessionId) {
+    if (!window.confirm("Are you sure you want to delete this conversation?")) return;
+    try {
+      await deleteConversation(sessionId);
+      if (currentSessionId === sessionId) {
+        handleNewConversation();
+      }
+      loadConversations();
+    } catch (error) {
+      console.error("Failed to delete conversation:", error);
+    }
+  }
+
   // Start new conversation
   function handleNewConversation() {
     setMessages([]);
     setQuery("");
-    localStorage.removeItem("tirumantiram_messages");
+    setCurrentSessionId(null);
+    setConversationTitle(isGuestMode() ? "Guest Session" : "Ask Thirumandiram");
+    localStorage.removeItem("lastSessionId");
     clearSession();
+    setIsSidebarOpen(false);
   }
 
   // Send message
@@ -69,6 +139,16 @@ function Ask({ songsData = {} }) {
     try {
       const data = await sendMessage(userQuery);
 
+      // Update session ID for new conversations
+      if (!currentSessionId && data.session_id) {
+        setCurrentSessionId(data.session_id);
+        setConversationTitle(data.conversation_title || "Conversation");
+        if (!isGuestMode()) {
+          localStorage.setItem("lastSessionId", data.session_id);
+          await loadConversations();
+        }
+      }
+
       if (data.out_of_scope) {
         setMessages((msgs) => [
           ...msgs,
@@ -81,12 +161,10 @@ function Ask({ songsData = {} }) {
             isHtml: false,
           },
         ]);
-        setIsLoading(false);
         return;
       }
 
       const botMessages = [];
-
       if (data.response) {
         botMessages.push({
           sender: "assistant",
@@ -114,7 +192,7 @@ function Ask({ songsData = {} }) {
 
       setMessages((msgs) => [...msgs, ...botMessages]);
     } catch (error) {
-      if (error.message === "UNAUTHORIZED") {
+      if (error.message === "UNAUTHORIZED" && !isGuestMode()) {
         setMessages((msgs) => [
           ...msgs,
           {
@@ -181,19 +259,30 @@ function Ask({ songsData = {} }) {
 
   return (
     <div className="ask-container">
+      {!isGuestMode() && (
+        <ConversationSidebar
+          conversations={conversations}
+          currentSessionId={currentSessionId}
+          onSelectConversation={loadConversation}
+          onNewConversation={handleNewConversation}
+          onDeleteConversation={handleDeleteConversation}
+          isOpen={isSidebarOpen}
+          onClose={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       <div className="chat-area">
         <div className="chat-header">
-          <h2>Ask Thirumandiram</h2>
-          {/* ✅ New Conversation button — clears chat and session */}
-          {messages.length > 0 && (
+          {!isGuestMode() && (
             <button
-              className="new-conversation-btn"
-              onClick={handleNewConversation}
-              title="Start a new conversation"
+              className="menu-btn"
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             >
-              New Chat
+              ☰
             </button>
           )}
+          <h2>{conversationTitle}</h2>
+          <div style={{ width: "40px" }} />
         </div>
 
         <div className="messages-area">

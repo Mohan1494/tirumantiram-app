@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { isAuthenticated } from "../utils/authUtils";
 import "./Home.css";
 
 function Home() {
@@ -12,7 +13,7 @@ function Home() {
         <p className="home-subtitle">
           Explore the wisdom of Thirumandiram in Tamil &amp; English.
         </p>
-        <Link to="/ask" className="home-cta">
+        <Link to={isAuthenticated() ? "/ask" : "/login"} className="home-cta">
           Get Started →
         </Link>
       </div>

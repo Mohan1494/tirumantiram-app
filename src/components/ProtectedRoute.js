@@ -1,10 +1,10 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { isAuthenticated } from '../utils/authUtils';
+import { isAuthenticated, isGuestMode } from '../utils/authUtils';
 
 function ProtectedRoute({ children }) {
-  if (!isAuthenticated()) {
-    // Redirect to login if not authenticated
+  if (!isAuthenticated() && !isGuestMode()) {
+    // Redirect to login if not authenticated and not guest
     return <Navigate to="/login" replace />;
   }
 

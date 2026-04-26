@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
-import { setToken, setUser } from "../utils/authUtils";
+import { setToken, setUser, setGuestMode, isAuthenticated } from "../utils/authUtils";
 
 function Login() {
   const location = useLocation();
@@ -9,6 +9,54 @@ function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated()) {
+      navigate("/ask");
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    // Initialize Google Sign-In
+    if (window.google) {
+      window.google.accounts.id.initialize({
+        client_id: "250158981261-ael7se4dihijb7r11nhd9g1rqogfd3iv.apps.googleusercontent.com",
+        callback: handleCredentialResponse
+      });
+      window.google.accounts.id.renderButton(
+        document.getElementById("googleSignInDiv"),
+        { theme: "outline", size: "large", text: "continue_with", shape: "rectangular", width: 380 }
+      );
+      window.google.accounts.id.prompt(); // prompt for auto-select
+    }
+  }, []);
+
+  const handleCredentialResponse = async (response) => {
+    try {
+      setLoading(true);
+      const res = await fetch(`${BASE_URL}/auth/google`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: response.credential }),
+      });
+      
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.detail || data.message || "Google Login failed.");
+        setLoading(false);
+        return;
+      }
+      
+      setToken(data.access_token);
+      setUser(data.user || { email: "User" });
+      navigate("/ask");
+    } catch (err) {
+      setError("Network error during Google Login.");
+      console.error(err);
+      setLoading(false);
+    }
+  };
 
   const BASE_URL = "https://mohan1494-tirumantiram-backend.hf.space";
 
@@ -61,6 +109,11 @@ function Login() {
       setLoading(false);
     }
   }
+
+  const handleGuestLogin = () => {
+    setGuestMode();
+    navigate("/ask");
+  };
 
   return (
     <div
@@ -225,6 +278,36 @@ function Login() {
           Sign up here
         </Link>
       </p>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "10px" }}>
+        <div id="googleSignInDiv" style={{ display: 'flex', justifyContent: 'center' }}></div>
+
+        <button
+          type="button"
+          onClick={handleGuestLogin}
+          style={{
+            padding: "12px 20px",
+            backgroundColor: "transparent",
+            color: "var(--accent-color)",
+            border: "1px solid var(--accent-color)",
+            borderRadius: "8px",
+            fontSize: "1rem",
+            fontWeight: "600",
+            cursor: "pointer",
+            transition: "all 0.3s",
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.backgroundColor = "var(--accent-color)";
+            e.target.style.color = "white";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.backgroundColor = "transparent";
+            e.target.style.color = "var(--accent-color)";
+          }}
+        >
+          Skip Login & Continue as Guest
+        </button>
+      </div>
     </div>
   );
 }

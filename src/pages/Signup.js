@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { isAuthenticated, setUser, setToken } from "../utils/authUtils";
 
 function Signup() {
   const [email, setEmail] = useState("");
@@ -8,6 +9,54 @@ function Signup() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated()) {
+      navigate("/ask");
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    // Initialize Google Sign-In
+    if (window.google) {
+      window.google.accounts.id.initialize({
+        client_id: "250158981261-ael7se4dihijb7r11nhd9g1rqogfd3iv.apps.googleusercontent.com",
+        callback: handleCredentialResponse
+      });
+      window.google.accounts.id.renderButton(
+        document.getElementById("googleSignInDiv"),
+        { theme: "outline", size: "large", text: "continue_with", shape: "rectangular", width: 380 }
+      );
+      window.google.accounts.id.prompt(); // prompt for auto-select
+    }
+  }, []);
+
+  const handleCredentialResponse = async (response) => {
+    try {
+      setLoading(true);
+      const res = await fetch(`${BASE_URL}/auth/google`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: response.credential }),
+      });
+      
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.detail || data.message || "Google Login failed.");
+        setLoading(false);
+        return;
+      }
+      
+      setToken(data.access_token);
+      setUser(data.user || { email: "User" });
+      navigate("/ask");
+    } catch (err) {
+      setError("Network error during Google Login.");
+      console.error(err);
+      setLoading(false);
+    }
+  };
 
   const BASE_URL = "https://mohan1494-tirumantiram-backend.hf.space";
 
@@ -269,6 +318,10 @@ function Signup() {
           Login here
         </Link>
       </p>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "10px" }}>
+        <div id="googleSignInDiv" style={{ display: 'flex', justifyContent: 'center' }}></div>
+      </div>
     </div>
   );
 }

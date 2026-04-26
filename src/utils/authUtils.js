@@ -17,11 +17,30 @@ export const setToken = (token) => {
 export const removeToken = () => {
   localStorage.removeItem("token");
   localStorage.removeItem("user");
+  localStorage.removeItem("isGuest");
+  
+  // Disable Google Auto Select
+  if (window.google && window.google.accounts && window.google.accounts.id) {
+    window.google.accounts.id.disableAutoSelect();
+  }
+  
   dispatchAuthChange();
 };
 
 export const isAuthenticated = () => {
   return !!getToken();
+};
+
+export const isGuestMode = () => {
+  return localStorage.getItem("isGuest") === "true";
+};
+
+export const setGuestMode = () => {
+  localStorage.setItem("isGuest", "true");
+  // Optionally remove token if any
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  dispatchAuthChange();
 };
 
 export const getAuthHeaders = () => {
